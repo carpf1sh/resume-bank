@@ -1,0 +1,182 @@
+{
+  "$defs": {
+    "Contact": {
+      "additionalProperties": false,
+      "description": "Private contact details: rendered on resumes, never on the public site.",
+      "properties": {
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        }
+      },
+      "title": "Contact",
+      "type": "object"
+    },
+    "Link": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "url"
+      ],
+      "title": "Link",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "headline": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Headline"
+    },
+    "location": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Public location, e.g. 'Denver, CO' or 'Remote, US'",
+      "title": "Location"
+    },
+    "contact": {
+      "$ref": "#/$defs/Contact",
+      "default": {
+        "email": null,
+        "phone": null,
+        "location": null
+      }
+    },
+    "links": {
+      "description": "Public links (LinkedIn, GitHub, ...)",
+      "items": {
+        "$ref": "#/$defs/Link"
+      },
+      "title": "Links",
+      "type": "array"
+    },
+    "target_roles": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Target Roles",
+      "type": "array"
+    },
+    "target_domains": {
+      "description": "Domains the gap report checks for strong evidence",
+      "items": {
+        "enum": [
+          "security-architecture",
+          "cloud-security",
+          "ai-security",
+          "appsec",
+          "iam",
+          "grc",
+          "detection-response",
+          "devsecops",
+          "data-security",
+          "network-security",
+          "leadership"
+        ],
+        "type": "string"
+      },
+      "title": "Target Domains",
+      "type": "array"
+    },
+    "summaries": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Professional summary per target domain",
+      "title": "Summaries",
+      "type": "object"
+    },
+    "public_summary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Summary used on the public site",
+      "title": "Public Summary"
+    },
+    "site_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Public URL of the portfolio site, for canonical/OG tags",
+      "title": "Site Url"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "Profile",
+  "type": "object"
+}

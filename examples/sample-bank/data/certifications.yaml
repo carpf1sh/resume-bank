@@ -1,0 +1,2 @@
+certifications:
+  - { id: cissp, name: CISSP, issuer: ISC2, earned: "2021-09" }

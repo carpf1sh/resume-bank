@@ -1,0 +1,8 @@
+Jane Doe - Cloud Security Architect
+
+Northwind Cloud, Cloud Security Architect (2022-03 - present)
+- Designed a multi-account AWS landing zone with SCP guardrails for 120 accounts
+- Built an AI usage review process for engineering teams adopting coding assistants
+
+Contoso Bank, Security Engineer (2018-06 - 2022-02)
+- Migrated detections to detection-as-code, cutting false positives by 40%

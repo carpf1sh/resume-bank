@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "Certification": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "issuer": {
+          "title": "Issuer",
+          "type": "string"
+        },
+        "earned": {
+          "anyOf": [
+            {
+              "examples": [
+                "2021-03"
+              ],
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Earned"
+        },
+        "expires": {
+          "anyOf": [
+            {
+              "examples": [
+                "2021-03"
+              ],
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires"
+        },
+        "credential_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Id"
+        },
+        "verify_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verify Url"
+        },
+        "visibility": {
+          "default": "public",
+          "enum": [
+            "public",
+            "resume",
+            "private"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "issuer"
+      ],
+      "title": "Certification",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "certifications": {
+      "items": {
+        "$ref": "#/$defs/Certification"
+      },
+      "title": "Certifications",
+      "type": "array"
+    }
+  },
+  "title": "Certifications",
+  "type": "object"
+}

@@ -1,0 +1,20 @@
+id: northwind-2023-landing-zone
+role_id: northwind-cloud-security-architect
+title: Multi-account AWS landing zone
+period: { start: "2022-06", end: "2023-04" }
+star:
+  situation: Teams created AWS accounts by hand with no shared guardrails.
+  task: Give every team a secure account by default without slowing delivery.
+  action: Designed the landing zone, the account vending pipeline, and SCP guardrails.
+  result: 120 accounts enrolled at go-live with baseline guardrails applied automatically.
+metrics:
+  - { value: 120, unit: accounts, description: AWS accounts enrolled at go-live, verified: true }
+skills: [AWS, Landing Zones, Service Control Policies]
+domains: [cloud-security, security-architecture]
+visibility: public
+public_text: Designed a multi-account AWS landing zone that gives every team baseline guardrails by default.
+strength: 5
+resume_bullets:
+  - Designed a multi-account AWS landing zone with SCP guardrails, enrolling 120 accounts at go-live
+sources: [sources/resumes/2025-jane-doe-resume.txt, interviews/2025-12-01-gaps.md]
+last_reviewed: "2025-12-01"

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ name }}{% if headline %} · {{ headline }}{% endif %}</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="canonical" href="{{ base_url }}">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="{{ name }}{% if headline %} · {{ headline }}{% endif %}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ base_url }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+{{ json_ld | safe }}
+  </script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="bar-id" href="./"><b>{{ name | lower | replace(" ", "-") }}</b> / portfolio</a>
+    <nav aria-label="Sections">
+      <a href="#experience">experience</a>
+      {% if matrix %}<a href="#skills">skills</a>{% endif %}
+      {% if certifications %}<a href="#certifications">certifications</a>{% endif %}
+      {% if projects %}<a href="#projects">projects</a>{% endif %}
+      {% if education %}<a href="#education">education</a>{% endif %}
+      <button class="theme" type="button" aria-label="Toggle dark mode" hidden>◐</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="hero">
+    <h1>{{ name }}</h1>
+    {% if headline or location %}
+    <p class="headline">{{ headline or "" }}{% if headline and location %} · {% endif %}{% if location %}<span class="location">{{ location }}</span>{% endif %}</p>
+    {% endif %}
+    {% if summary %}<p class="summary">{{ summary }}</p>{% endif %}
+    {% if links or resume_pdf %}
+    <nav class="links" aria-label="Profiles and resume">
+      {% for link in links %}<a href="{{ link.url }}" rel="me noopener">{{ link.label }}</a>{% endfor %}
+      {% if resume_pdf %}<a class="resume-pdf" href="{{ resume_pdf }}" download type="application/pdf">Resume (PDF)</a>{% endif %}
+    </nav>
+    {% endif %}
+    {% if domain_chips %}
+    <ul class="domains" aria-label="Highlights by domain">
+      {% for d in domain_chips %}
+      <li><button type="button" class="dtile d-{{ d.slug }}" data-kind="domain" data-value="{{ d.slug }}" aria-pressed="false">
+        <b>{{ d.count }}</b><span>{{ d.label }}</span><small>highlight{{ "" if d.count == 1 else "s" }}</small>
+      </button></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+  <section id="experience" aria-labelledby="experience-h">
+    <div class="sec-head">
+      <h2 id="experience-h">Experience</h2>
+      <span class="count">{{ public_count }} highlights · {{ timeline | length }} roles</span>
+    </div>
+    {% if skill_chips %}
+    <div class="filters" hidden>
+      <div class="query">
+        <label for="q">filter</label>
+        <input id="q" type="search" placeholder="type a skill or keyword: aws, panther, ai" autocomplete="off" spellcheck="false">
+        <kbd aria-hidden="true">/</kbd>
+      </div>
+      <div class="chips skills" role="group" aria-label="Filter by skill">
+        {% for s in skill_chips %}<button type="button" class="chip{% if loop.index > 12 %} chip-extra{% endif %}" data-kind="skill" data-value="{{ s.slug }}" aria-pressed="false">{{ s.name }}</button>{% endfor %}
+        {% if skill_chips | length > 12 %}<button type="button" class="chip chip-more" aria-expanded="false">+{{ skill_chips | length - 12 }} more</button>{% endif %}
+      </div>
+      <p class="filter-status" aria-live="polite"></p>
+    </div>
+    {% endif %}
+
+    <ol class="timeline">
+      {% for role in timeline %}
+      <li class="role{% if not role.highlights %} role-empty{% endif %}">
+        <div class="role-head">
+          <h3>{{ role.title }} <span class="employer">· {{ role.employer }}</span></h3>
+          <time>{{ role.dates }}</time>
+        </div>
+        {% if role.highlights %}
+        <ul class="items">
+          {% for item in role.highlights %}
+          <li class="item" data-domains="{{ item.filter_domains }}" data-skills="{{ item.filter_skills }}">
+            <p>{{ item.text }}</p>
+            {% if item.domains or item.skills %}
+            <p class="tags">
+              {% for d in item.domains %}<span class="pill d-{{ d.slug }}">{{ d.label }}</span>{% endfor %}
+              {% for s in item.skills %}<span class="tag">{{ s.name }}</span>{% endfor %}
+            </p>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+      <li class="empty-state" hidden>No highlights match this filter.</li>
+    </ol>
+  </section>
+
+  {% if matrix %}
+  <section id="skills" aria-labelledby="skills-h">
+    <div class="sec-head"><h2 id="skills-h">Skills</h2></div>
+    <p class="note">Each number counts the highlights above (and projects) that show the skill in that domain.</p>
+    <div class="matrix-scroll">
+      <table class="matrix">
+        <thead>
+          <tr><th scope="col">Skill</th>{% for d in matrix_domains %}<th scope="col" class="d-{{ d.slug }}">{{ d.label }}</th>{% endfor %}</tr>
+        </thead>
+        {% for group in matrix %}
+        <tbody>
+          <tr class="cat"><th scope="rowgroup" colspan="{{ matrix_domains | length + 1 }}">{{ group.category }}</th></tr>
+          {% for s in group.skills %}
+          <tr>
+            <th scope="row">{{ s.name }}</th>
+            {% for n in s.cells %}<td{% if n %} class="hit" style="--n: {{ n }}"{% endif %}>{{ n or "" }}</td>{% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% endfor %}
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if certifications %}
+  <section id="certifications" aria-labelledby="certifications-h">
+    <div class="sec-head"><h2 id="certifications-h">Certifications</h2></div>
+    <ul class="cards">
+      {% for c in certifications %}
+      <li class="card">
+        <h3>{% if c.verify_url %}<a href="{{ c.verify_url }}" rel="noopener">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</h3>
+        <p class="meta">{{ c.issuer }}{% if c.earned %} · <time>{{ c.earned }}</time>{% endif %}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if projects %}
+  <section id="projects" aria-labelledby="projects-h">
+    <div class="sec-head"><h2 id="projects-h">Projects</h2></div>
+    <ul class="cards">
+      {% for p in projects %}
+      <li class="card">
+        <h3>{% if p.url %}<a href="{{ p.url }}" rel="noopener">{{ p.name }}</a>{% else %}{{ p.name }}{% endif %}</h3>
+        {% if p.dates %}<p class="meta"><time>{{ p.dates }}</time></p>{% endif %}
+        <p>{{ p.text }}</p>
+        {% if p.skills %}<p class="tags">{% for s in p.skills %}<span class="tag">{{ s.name }}</span>{% endfor %}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if education %}
+  <section id="education" aria-labelledby="education-h">
+    <div class="sec-head"><h2 id="education-h">Education</h2></div>
+    <ul class="cards">
+      {% for d in education %}
+      <li class="card">
+        <h3>{{ d.degree }}{% if d.field %}, {{ d.field }}{% endif %}</h3>
+        <p class="meta">{{ d.institution }}{% if d.dates %} · <time>{{ d.dates }}</time>{% endif %}</p>
+        {% if d.honors %}<p>{{ d.honors }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</main>
+
+<footer class="wrap foot">
+  <p>{{ name }}{% for link in links %} · <a href="{{ link.url }}" rel="me noopener">{{ link.label }}</a>{% endfor %}</p>
+{% if "how-it-works.html" in pages %}
+  <p><a href="how-it-works.html">How this site works</a>: the AI-assisted system behind this portfolio and my resumes.</p>
+{% endif %}
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

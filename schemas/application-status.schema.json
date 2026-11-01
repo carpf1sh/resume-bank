@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "StatusEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "stage": {
+          "enum": [
+            "drafted",
+            "applied",
+            "screening",
+            "interviewing",
+            "offer",
+            "rejected",
+            "withdrawn",
+            "closed"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "date",
+        "stage"
+      ],
+      "title": "StatusEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "company": {
+      "title": "Company",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Url"
+    },
+    "stage": {
+      "default": "drafted",
+      "enum": [
+        "drafted",
+        "applied",
+        "screening",
+        "interviewing",
+        "offer",
+        "rejected",
+        "withdrawn",
+        "closed"
+      ],
+      "title": "Stage",
+      "type": "string"
+    },
+    "created": {
+      "format": "date",
+      "title": "Created",
+      "type": "string"
+    },
+    "history": {
+      "items": {
+        "$ref": "#/$defs/StatusEvent"
+      },
+      "title": "History",
+      "type": "array"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "company",
+    "title",
+    "created"
+  ],
+  "title": "ApplicationStatus",
+  "type": "object"
+}

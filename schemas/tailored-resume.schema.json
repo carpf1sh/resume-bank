@@ -1,0 +1,111 @@
+{
+  "$defs": {
+    "TailoredBullet": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "sources": {
+          "description": "Accomplishment ids backing this bullet",
+          "items": {
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text",
+        "sources"
+      ],
+      "title": "TailoredBullet",
+      "type": "object"
+    },
+    "TailoredRole": {
+      "additionalProperties": false,
+      "properties": {
+        "role_id": {
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "title": "Role Id",
+          "type": "string"
+        },
+        "condensed": {
+          "default": false,
+          "description": "Render title/dates only, no bullets",
+          "title": "Condensed",
+          "type": "boolean"
+        },
+        "bullets": {
+          "items": {
+            "$ref": "#/$defs/TailoredBullet"
+          },
+          "title": "Bullets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "role_id"
+      ],
+      "title": "TailoredRole",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "posting": {
+      "description": "Path to the frozen posting, relative to the application folder",
+      "title": "Posting",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "skills": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Skills",
+      "type": "array"
+    },
+    "roles": {
+      "items": {
+        "$ref": "#/$defs/TailoredRole"
+      },
+      "title": "Roles",
+      "type": "array"
+    },
+    "certifications": {
+      "items": {
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "type": "string"
+      },
+      "title": "Certifications",
+      "type": "array"
+    },
+    "projects": {
+      "items": {
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "type": "string"
+      },
+      "title": "Projects",
+      "type": "array"
+    },
+    "include_education": {
+      "default": true,
+      "title": "Include Education",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "posting",
+    "summary",
+    "roles"
+  ],
+  "title": "TailoredResume",
+  "type": "object"
+}

@@ -1,0 +1,122 @@
+{
+  "additionalProperties": false,
+  "description": "YAML frontmatter of a posting (jobs/inbox/*.md, applications/*/posting.md).",
+  "properties": {
+    "id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Id"
+    },
+    "company": {
+      "title": "Company",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Url"
+    },
+    "location": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Location"
+    },
+    "remote": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Remote"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Where the posting came from: a URL, a file, a job board",
+      "title": "Source"
+    },
+    "found_at": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Found At"
+    },
+    "salary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Salary"
+    },
+    "keywords": {
+      "description": "Posting terms to check coverage for that data/skills.yaml doesn't already match",
+      "items": {
+        "type": "string"
+      },
+      "title": "Keywords",
+      "type": "array"
+    },
+    "match_hints": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Match Hints",
+      "type": "array"
+    }
+  },
+  "required": [
+    "company",
+    "title"
+  ],
+  "title": "PostingMeta",
+  "type": "object"
+}

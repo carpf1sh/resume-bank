@@ -1,0 +1,17 @@
+posting: posting.md
+summary: Cloud security architect who designs AWS landing zones and guardrails and leads security reviews of AI tooling.
+skills: [AWS, Landing Zones, Service Control Policies, AI Governance, Detection Engineering]
+roles:
+  - role_id: northwind-cloud-security-architect
+    bullets:
+      - text: Designed a multi-account AWS landing zone with SCP guardrails, enrolling 120 accounts at go-live
+        sources: [northwind-2023-landing-zone]
+      - text: Built a security review process for AI coding assistants adopted by engineering teams
+        sources: [northwind-2024-ai-usage-reviews]
+  - role_id: contoso-security-engineer
+    bullets:
+      # The 40% is verified: false; confirm before sending.
+      - text: Migrated detections to detection-as-code, cutting false positives by 40%
+        sources: [contoso-2020-detection-as-code]
+certifications: [cissp]
+include_education: true

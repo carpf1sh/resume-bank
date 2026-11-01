@@ -1,0 +1,16 @@
+id: contoso-2020-detection-as-code
+role_id: contoso-security-engineer
+title: Detection-as-code migration
+period: { start: "2020-01", end: "2020-10" }
+star:
+  action: Migrated SIEM detections into version control with tests and peer review.
+  result: False positives fell by about 40%.
+metrics:
+  - { value: 40, unit: "%", description: approx. reduction in false positives, verified: false }
+skills: [Detection Engineering]
+domains: [detection-response]
+visibility: resume
+strength: 3
+resume_bullets:
+  - Migrated detections to detection-as-code, cutting false positives by 40%
+sources: [sources/resumes/2025-jane-doe-resume.txt]

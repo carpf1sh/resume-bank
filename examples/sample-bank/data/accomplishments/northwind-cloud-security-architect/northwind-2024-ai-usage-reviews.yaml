@@ -1,0 +1,16 @@
+id: northwind-2024-ai-usage-reviews
+role_id: northwind-cloud-security-architect
+title: AI usage review process
+period: { start: "2024-02", end: present }
+star:
+  situation: Engineering teams were adopting AI coding assistants without a review path.
+  action: Built a lightweight review covering data handling, vendor terms, and tool permissions.
+  result: null
+skills: [AI Governance]
+domains: [ai-security]
+visibility: public
+public_text: Built a review process that lets engineering teams adopt AI coding assistants safely.
+strength: 3
+resume_bullets:
+  - Built an AI usage review process for engineering teams adopting coding assistants
+sources: [sources/resumes/2025-jane-doe-resume.txt, interviews/2025-12-01-gaps.md]

@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Build output (site is published to the public repo, not committed here)
+build/
+
+# Office lock/temp files
+~$*
+*.tmp
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+
+# Local Claude settings
+.claude/settings.local.json

@@ -1,0 +1,62 @@
+{
+  "$defs": {
+    "Skill": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aliases",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Skill",
+      "type": "object"
+    },
+    "SkillCategory": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "skills"
+      ],
+      "title": "SkillCategory",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "categories": {
+      "items": {
+        "$ref": "#/$defs/SkillCategory"
+      },
+      "title": "Categories",
+      "type": "array"
+    }
+  },
+  "required": [
+    "categories"
+  ],
+  "title": "SkillsTaxonomy",
+  "type": "object"
+}

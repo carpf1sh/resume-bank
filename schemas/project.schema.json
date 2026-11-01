@@ -1,0 +1,144 @@
+{
+  "$defs": {
+    "Period": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "examples": [
+            "2021-03"
+          ],
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "examples": [
+                "2021-03"
+              ],
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "const": "present",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        }
+      },
+      "required": [
+        "start"
+      ],
+      "title": "Period",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Url"
+    },
+    "period": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Period"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "skills": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Skills",
+      "type": "array"
+    },
+    "domains": {
+      "items": {
+        "enum": [
+          "security-architecture",
+          "cloud-security",
+          "ai-security",
+          "appsec",
+          "iam",
+          "grc",
+          "detection-response",
+          "devsecops",
+          "data-security",
+          "network-security",
+          "leadership"
+        ],
+        "type": "string"
+      },
+      "title": "Domains",
+      "type": "array"
+    },
+    "visibility": {
+      "default": "public",
+      "enum": [
+        "public",
+        "resume",
+        "private"
+      ],
+      "title": "Visibility",
+      "type": "string"
+    },
+    "public_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Public Text"
+    },
+    "sources": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "description"
+  ],
+  "title": "Project",
+  "type": "object"
+}

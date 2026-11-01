@@ -1,0 +1,11 @@
+{
+  "name": "resume-bank",
+  "owner": { "name": "carpf1sh" },
+  "plugins": [
+    {
+      "name": "resume-bank",
+      "source": "./",
+      "description": "Skills for an evidence-backed career bank: ingest, interview, tailor, bank-review, publish."
+    }
+  ]
+}

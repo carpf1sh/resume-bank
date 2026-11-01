@@ -1,0 +1,356 @@
+{
+  "$defs": {
+    "Leadership": {
+      "additionalProperties": false,
+      "properties": {
+        "team_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Size"
+        },
+        "direct_reports": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Direct Reports"
+        },
+        "cross_functional": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cross Functional"
+        }
+      },
+      "title": "Leadership",
+      "type": "object"
+    },
+    "Metric": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Value"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "verified": {
+          "default": false,
+          "description": "True once the owner has confirmed the number",
+          "title": "Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value",
+        "unit",
+        "description"
+      ],
+      "title": "Metric",
+      "type": "object"
+    },
+    "Period": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "examples": [
+            "2021-03"
+          ],
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "examples": [
+                "2021-03"
+              ],
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "const": "present",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        }
+      },
+      "required": [
+        "start"
+      ],
+      "title": "Period",
+      "type": "object"
+    },
+    "Star": {
+      "additionalProperties": false,
+      "properties": {
+        "situation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Situation"
+        },
+        "task": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Task"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result"
+        }
+      },
+      "title": "Star",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "role_id": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Role Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "period": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Period"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "star": {
+      "$ref": "#/$defs/Star",
+      "default": {
+        "situation": null,
+        "task": null,
+        "action": null,
+        "result": null
+      }
+    },
+    "metrics": {
+      "items": {
+        "$ref": "#/$defs/Metric"
+      },
+      "title": "Metrics",
+      "type": "array"
+    },
+    "skills": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Skills",
+      "type": "array"
+    },
+    "domains": {
+      "items": {
+        "enum": [
+          "security-architecture",
+          "cloud-security",
+          "ai-security",
+          "appsec",
+          "iam",
+          "grc",
+          "detection-response",
+          "devsecops",
+          "data-security",
+          "network-security",
+          "leadership"
+        ],
+        "type": "string"
+      },
+      "title": "Domains",
+      "type": "array"
+    },
+    "frameworks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Frameworks",
+      "type": "array"
+    },
+    "leadership": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Leadership"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "visibility": {
+      "default": "resume",
+      "enum": [
+        "public",
+        "resume",
+        "private"
+      ],
+      "title": "Visibility",
+      "type": "string"
+    },
+    "public_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Sanitized wording for the public site",
+      "title": "Public Text"
+    },
+    "public_skills": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Skills to tag on the public site when `skills` names something internal (default: skills)",
+      "title": "Public Skills"
+    },
+    "resume_bullets": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Resume Bullets",
+      "type": "array"
+    },
+    "sources": {
+      "description": "Files this accomplishment was drawn from",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "strength": {
+      "anyOf": [
+        {
+          "maximum": 5,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Strength"
+    },
+    "last_reviewed": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Reviewed"
+    }
+  },
+  "required": [
+    "id",
+    "role_id",
+    "title",
+    "sources"
+  ],
+  "title": "Accomplishment",
+  "type": "object"
+}

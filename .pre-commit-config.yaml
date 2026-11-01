@@ -1,0 +1,15 @@
+# Install once per clone:  uv run pre-commit install
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: rmgr-validate
+        name: validate the sample bank
+        entry: uv run --no-sync rmgr validate --strict --root examples/sample-bank
+        language: system
+        pass_filenames: false
+        files: ^(examples|src/resume_mgmt)/

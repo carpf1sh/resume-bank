@@ -1,0 +1,2 @@
+education:
+  - { institution: State University, degree: BS, field: Computer Science, period: { start: "2014-09", end: "2018-05" } }

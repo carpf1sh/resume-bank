@@ -1,0 +1,19 @@
+name: Jane Doe
+headline: Cloud Security Architect
+location: Remote, US
+site_url: "https://example.github.io/resume/"
+contact:
+  email: jane.doe@example.com
+  phone: 555-0100
+  location: Springfield, IL
+links:
+  - { label: GitHub, url: "https://github.com/example" }
+target_roles:
+  - Cloud Security Architect
+target_domains:
+  - security-architecture
+  - cloud-security
+  - ai-security
+summaries:
+  general: Security architect who builds cloud guardrails and review processes that let engineering teams move quickly.
+public_summary: Cloud security architect focused on landing zones, guardrails, and safe adoption of AI tools.

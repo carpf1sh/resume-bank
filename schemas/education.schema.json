@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "Degree": {
+      "additionalProperties": false,
+      "properties": {
+        "institution": {
+          "title": "Institution",
+          "type": "string"
+        },
+        "degree": {
+          "title": "Degree",
+          "type": "string"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "honors": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "GPA, honors, distinctions",
+          "title": "Honors"
+        },
+        "visibility": {
+          "default": "public",
+          "enum": [
+            "public",
+            "resume",
+            "private"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "institution",
+        "degree"
+      ],
+      "title": "Degree",
+      "type": "object"
+    },
+    "Period": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "examples": [
+            "2021-03"
+          ],
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "examples": [
+                "2021-03"
+              ],
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "const": "present",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        }
+      },
+      "required": [
+        "start"
+      ],
+      "title": "Period",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "education": {
+      "items": {
+        "$ref": "#/$defs/Degree"
+      },
+      "title": "Education",
+      "type": "array"
+    }
+  },
+  "title": "Education",
+  "type": "object"
+}

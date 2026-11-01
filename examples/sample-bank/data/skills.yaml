@@ -1,0 +1,12 @@
+categories:
+  - name: Cloud Security
+    skills:
+      - { name: AWS, aliases: [Amazon Web Services] }
+      - { name: Landing Zones, aliases: [landing zone, AWS Control Tower] }
+      - { name: Service Control Policies, aliases: [SCP, SCPs] }
+  - name: Detection & Response
+    skills:
+      - { name: Detection Engineering, aliases: [detection-as-code] }
+  - name: AI Security
+    skills:
+      - { name: AI Governance, aliases: [AI usage policy] }

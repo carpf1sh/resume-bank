@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "Period": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "examples": [
+            "2021-03"
+          ],
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "examples": [
+                "2021-03"
+              ],
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "const": "present",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        }
+      },
+      "required": [
+        "start"
+      ],
+      "title": "Period",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "employer": {
+      "title": "Employer",
+      "type": "string"
+    },
+    "public_employer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Name to show publicly if the employer must be anonymized",
+      "title": "Public Employer"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "location": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Location"
+    },
+    "employment_type": {
+      "default": "full-time",
+      "enum": [
+        "full-time",
+        "part-time",
+        "contract",
+        "consulting",
+        "internship"
+      ],
+      "title": "Employment Type",
+      "type": "string"
+    },
+    "track": {
+      "default": "security",
+      "description": "'other' = pre-security roles: kept for history, skipped by gap checks",
+      "enum": [
+        "security",
+        "other"
+      ],
+      "title": "Track",
+      "type": "string"
+    },
+    "period": {
+      "$ref": "#/$defs/Period"
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "One or two lines on scope and mandate",
+      "title": "Summary"
+    },
+    "team_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Team Size"
+    },
+    "sources": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "employer",
+    "title",
+    "period"
+  ],
+  "title": "Role",
+  "type": "object"
+}

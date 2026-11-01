@@ -1,0 +1,7 @@
+id: northwind-cloud-security-architect
+employer: Northwind Cloud
+title: Cloud Security Architect
+location: Remote
+period: { start: "2022-03", end: present }
+summary: Owns cloud security architecture for a SaaS platform on AWS.
+sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,0 +1,81 @@
+name: Publish site
+
+# Reference workflow for a BANK repo (copy it to .github/workflows/ there).
+# Builds the public portfolio from data/ (public items only, leak-guarded) and
+# pushes it to the root of a separate public repo's main branch, which GitHub Pages serves.
+# Setup: create an SSH deploy key with write access on the site repo and store the
+# private half in the bank repo as the SITE_DEPLOY_KEY secret. Set SITE_REPO below.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "site/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/publish-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-site
+  cancel-in-progress: false
+
+# Actions are pinned to commit SHAs; Dependabot (.github/dependabot.yml) bumps them.
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Install
+        run: uv sync --locked
+
+      - name: Validate bank
+        run: uv run rmgr validate
+
+      # The site links a PDF resume, and `build site` fails without LibreOffice rather than
+      # publish without it. Carlito is metric-compatible with Calibri, so pagination matches local builds.
+      - name: Install LibreOffice (renders the PDF resume)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends libreoffice-writer fonts-crosextra-carlito
+
+      - name: Build site (fails on any private-data leak)
+        run: uv run rmgr build site --out build/site
+
+      - name: Push to the site repo
+        env:
+          SITE_DEPLOY_KEY: ${{ secrets.SITE_DEPLOY_KEY }}
+          SITE_REPO: your-user/your-site-repo   # owner/name of the public Pages repo
+        run: |
+          set -euo pipefail
+          key="$RUNNER_TEMP/site_deploy_key"
+          hosts="$RUNNER_TEMP/known_hosts"
+          ( umask 077; printf '%s\n' "$SITE_DEPLOY_KEY" > "$key" )
+          # GitHub's published SSH host key (docs: "GitHub's SSH key fingerprints").
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$hosts"
+          export GIT_SSH_COMMAND="ssh -i $key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$hosts"
+
+          public="$RUNNER_TEMP/public"
+          git clone --depth 1 --branch main git@github.com:${SITE_REPO}.git "$public"
+          # Mirror build/site into the repo root; keep its .git and README.md.
+          rsync -a --delete --exclude .git --exclude README.md build/site/ "$public/"
+
+          cd "$public"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Site unchanged; nothing to publish."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "site: publish from ${GITHUB_REPOSITORY#*/}@${GITHUB_SHA::7}"
+          git push origin HEAD:main
+          rm -f "$key"

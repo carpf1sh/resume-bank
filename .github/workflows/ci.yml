@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read  # gitleaks-action lists PR commits
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Actions are pinned to commit SHAs; Dependabot (.github/dependabot.yml) bumps them.
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Scan history for secrets
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Install
+        run: uv sync --locked
+
+      - name: Validate sample bank
+        run: uv run rmgr validate --strict --root examples/sample-bank
+
+      - name: Tests
+        run: uv run pytest -q
+
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Audit locked dependencies
+        run: |
+          uv export --locked --no-emit-project --format requirements-txt -o "$RUNNER_TEMP/requirements.txt"
+          uvx pip-audit --strict --require-hashes --disable-pip -r "$RUNNER_TEMP/requirements.txt"
+
+      - name: Lint workflows (zizmor)
+        run: uvx zizmor --format plain .github/workflows
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
