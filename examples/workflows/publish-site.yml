@@ -59,6 +59,7 @@ jobs:
           set -euo pipefail
           key="$RUNNER_TEMP/site_deploy_key"
           hosts="$RUNNER_TEMP/known_hosts"
+          trap 'rm -f "$key"' EXIT
           ( umask 077; printf '%s\n' "$SITE_DEPLOY_KEY" > "$key" )
           # GitHub's published SSH host key (docs: "GitHub's SSH key fingerprints").
           echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$hosts"
@@ -78,4 +79,3 @@ jobs:
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -q -m "site: publish from ${GITHUB_REPOSITORY#*/}@${GITHUB_SHA::7}"
           git push origin HEAD:main
-          rm -f "$key"
