@@ -2,7 +2,38 @@ Jane Doe - Cloud Security Architect
 
 Northwind Cloud, Cloud Security Architect (2022-03 - present)
 - Designed a multi-account AWS landing zone with SCP guardrails for 120 accounts
+- Published secure-by-default Terraform modules for AWS, adopted by 14 product teams
+- Rolled out CSPM across all AWS accounts; 85% of critical findings remediated within SLA
+- Built an AWS log pipeline to the SIEM and shipped 25 cloud detections as code
+- Automated SOC 2 evidence collection for cloud controls
+- Defined and enforced an EKS security baseline across all 9 production clusters
+- Led a three-person team automating alert triage with SOAR enrichment and LLM summaries
 - Built an AI usage review process for engineering teams adopting coding assistants
 
-Contoso Bank, Security Engineer (2018-06 - 2022-02)
+Contoso Bank, Senior Security Engineer (2021-01 - 2022-02)
+- Led a SIEM migration, onboarding 30 log sources with no coverage gap
+- Wrote and automated the phishing response playbook
+
+Contoso Bank, Security Engineer (2018-06 - 2020-12)
+- Built a 12-metric security reporting program for the board risk committee
 - Migrated detections to detection-as-code, cutting false positives by 40%
+
+Litware Consulting, Senior Security Risk Analyst (2016-09 - 2018-05)
+- Designed a tiered vendor risk process for a financial-services client; 150 vendors assessed
+- Rebuilt a client's security risk register with consistent scoring
+
+Litware Consulting, Security Risk Analyst (2015-07 - 2016-08)
+- Delivered 8 NIST CSF maturity assessments for mid-size clients
+
+Wide World Importers, IT Compliance Analyst (2014-09 - 2015-06)
+- Automated quarterly access reviews for audit-scoped systems
+
+Fourth Coffee, Information Security Consultant (contract, 2014-01 - 2014-08)
+- Rewrote the information security policy set and mapped it to NIST CSF
+
+Adventure Works, Store Technician (2011-06 - 2013-12); Sales Associate (2009-06 - 2011-05)
+- Ran the in-store repair desk for phones and laptops
+
+Certifications: CISSP (2021-09), AWS Certified Security - Specialty (2023-06), CompTIA Security+ (2015-03)
+Education: MS Cybersecurity, Northbridge University (2019); BS Computer Science, State University (2013);
+AS Computer Science, Springfield Community College (2011)

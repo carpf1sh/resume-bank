@@ -1,0 +1,19 @@
+id: northwind-2026-design-review-program
+role_id: northwind-principal-security-architect
+title: Security design review program
+period: { start: "2026-02", end: present }
+star:
+  situation: Security design reviews happened ad hoc and late in delivery.
+  task: Make reviews predictable and early without becoming a bottleneck.
+  action: Set up an intake, a lightweight threat-modeling template, and office hours; trained two engineers to run reviews.
+  result: About 30 reviews in the first six months.
+metrics:
+  - { value: 30, unit: reviews, description: approx. design reviews in the first six months, verified: false }
+skills: [Security Architecture Review, Threat Modeling, Zero Trust, Mentoring]
+domains: [security-architecture, ai-security, cloud-security, leadership]
+visibility: public
+public_text: Built a security design review program with a threat-modeling template and trained engineers to run reviews.
+strength: 4
+resume_bullets:
+  - Launched a security design review program with threat-modeling templates, completing about 30 reviews in six months
+sources: [interviews/2026-03-10-checkin.md]

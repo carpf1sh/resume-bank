@@ -1,0 +1,15 @@
+id: fourthcoffee-2014-policy-refresh
+role_id: fourthcoffee-security-consultant
+title: Security policy refresh
+period: { start: "2014-01", end: "2014-08" }
+star:
+  action: Rewrote the information security policy set and mapped it to NIST CSF.
+  result: null
+skills: [NIST CSF]
+domains: [grc]
+visibility: public
+public_text: Rewrote a company's information security policies and mapped them to the NIST Cybersecurity Framework.
+strength: 2
+resume_bullets:
+  - Rewrote the information security policy set and mapped it to NIST CSF
+sources: [sources/resumes/2025-jane-doe-resume.txt]

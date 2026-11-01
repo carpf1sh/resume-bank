@@ -1,0 +1,8 @@
+id: adventureworks-store-technician
+employer: Adventure Works
+title: Store Technician
+location: Springfield, IL
+employment_type: part-time
+track: other
+period: { start: "2011-06", end: "2013-12" }
+sources: [sources/resumes/2025-jane-doe-resume.txt]

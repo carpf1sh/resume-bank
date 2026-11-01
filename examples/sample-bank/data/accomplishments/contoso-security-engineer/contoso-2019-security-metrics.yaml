@@ -1,0 +1,17 @@
+id: contoso-2019-security-metrics
+role_id: contoso-security-engineer
+title: Security metrics for the risk committee
+period: { start: "2019-01", end: "2019-11" }
+star:
+  action: Built the security metrics program and the quarterly report to the board risk committee, and trained an analyst to run it.
+  result: 12 metrics reported quarterly.
+metrics:
+  - { value: 12, unit: metrics, description: security metrics reported quarterly, verified: true }
+skills: [Security Metrics, SQL, Python, Team Leadership]
+domains: [grc, leadership]
+visibility: public
+public_text: Built a security metrics program reported quarterly to a bank's board risk committee.
+strength: 3
+resume_bullets:
+  - Built a 12-metric security reporting program for the board risk committee and trained an analyst to run it
+sources: [sources/resumes/2025-jane-doe-resume.txt]

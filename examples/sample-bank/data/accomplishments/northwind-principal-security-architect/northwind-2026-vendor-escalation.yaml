@@ -1,0 +1,12 @@
+id: northwind-2026-vendor-escalation
+role_id: northwind-principal-security-architect
+title: Vendor contract escalation (reference only)
+period: { start: "2026-04", end: "2026-05" }
+star:
+  action: Escalated a vendor's data-retention terms to legal during an AI platform review.
+  result: Terms were renegotiated before go-live.
+skills: [Third-Party Risk]
+domains: [ai-security]
+visibility: private
+strength: 2
+sources: [interviews/2026-03-10-checkin.md]

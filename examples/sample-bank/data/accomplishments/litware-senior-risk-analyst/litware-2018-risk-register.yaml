@@ -1,0 +1,14 @@
+id: litware-2018-risk-register
+role_id: litware-senior-risk-analyst
+title: Risk register rebuild
+period: { start: "2018-01", end: "2018-05" }
+star:
+  action: Rebuilt a client's security risk register with consistent scoring.
+  result: null
+skills: [Risk Assessment]
+domains: [grc]
+visibility: resume
+strength: 2
+resume_bullets:
+  - Rebuilt a client's security risk register with consistent likelihood and impact scoring
+sources: [sources/resumes/2025-jane-doe-resume.txt]

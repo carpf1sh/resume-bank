@@ -3,5 +3,5 @@ employer: Contoso Bank
 public_employer: A regional bank
 title: Security Engineer
 location: Springfield, IL
-period: { start: "2018-06", end: "2022-02" }
+period: { start: "2018-06", end: "2020-12" }
 sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,0 +1,17 @@
+id: litware-2016-csf-assessments
+role_id: litware-risk-analyst
+title: NIST CSF assessments
+period: { start: "2015-09", end: "2016-08" }
+star:
+  action: Ran NIST CSF maturity assessments for mid-size clients.
+  result: 8 assessments delivered.
+metrics:
+  - { value: 8, unit: assessments, description: client NIST CSF assessments delivered, verified: true }
+skills: [NIST CSF, Risk Assessment]
+domains: [grc]
+visibility: public
+public_text: Ran NIST Cybersecurity Framework assessments for mid-size clients.
+strength: 2
+resume_bullets:
+  - Delivered 8 NIST CSF maturity assessments for mid-size clients
+sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,0 +1,16 @@
+id: northwind-2025-eks-baseline
+role_id: northwind-cloud-security-architect
+title: EKS security baseline
+period: { start: "2025-01", end: "2025-06" }
+star:
+  action: Wrote the security baseline for EKS clusters and enforced it with admission policies.
+  result: All 9 production clusters on the baseline.
+metrics:
+  - { value: 9, unit: clusters, description: production EKS clusters on the baseline, verified: true }
+skills: [Kubernetes, AWS]
+domains: [cloud-security]
+visibility: resume
+strength: 3
+resume_bullets:
+  - Defined and enforced an EKS security baseline across all 9 production clusters
+sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,0 +1,14 @@
+id: northwind-2024-soc2-evidence
+role_id: northwind-cloud-security-architect
+title: SOC 2 cloud evidence automation
+period: { start: "2024-05", end: "2024-10" }
+star:
+  action: Automated collection of cloud control evidence for the SOC 2 audit.
+  result: null
+skills: [SOC 2, Python, AWS]
+domains: [grc, cloud-security]
+visibility: resume
+strength: 2
+resume_bullets:
+  - Automated SOC 2 evidence collection for cloud controls
+sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,0 +1,16 @@
+id: northwind-2026-agent-guardrails
+role_id: northwind-principal-security-architect
+title: Default guardrails for AI coding agents
+period: { start: "2026-03", end: present }
+star:
+  situation: Engineers started running AI coding agents with broad access to source and cloud credentials.
+  action: Defined default sandbox and permission profiles for agents and published them as a paved path.
+  result: null
+skills: [AI Governance, LLM Security, Kubernetes]
+domains: [ai-security, cloud-security]
+visibility: public
+public_text: Defined default guardrails that let engineers run AI coding agents with least-privilege access.
+strength: 4
+resume_bullets:
+  - Defined default sandbox and permission profiles for AI coding agents, published as a paved path for engineering
+sources: [interviews/2026-03-10-checkin.md]

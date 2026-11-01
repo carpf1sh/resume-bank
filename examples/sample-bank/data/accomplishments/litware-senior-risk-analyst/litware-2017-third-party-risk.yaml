@@ -1,0 +1,17 @@
+id: litware-2017-third-party-risk
+role_id: litware-senior-risk-analyst
+title: Third-party risk program for a client
+period: { start: "2017-01", end: "2018-03" }
+star:
+  action: Designed a tiered vendor assessment process for a financial-services client.
+  result: 150 vendors tiered and assessed in the first year.
+metrics:
+  - { value: 150, unit: vendors, description: vendors tiered and assessed, verified: true }
+skills: [Third-Party Risk, Risk Assessment]
+domains: [grc]
+visibility: public
+public_text: Designed a tiered third-party risk assessment process for a financial-services client.
+strength: 3
+resume_bullets:
+  - Designed a tiered vendor risk process for a financial-services client, assessing 150 vendors in year one
+sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,2 +1,4 @@
 education:
-  - { institution: State University, degree: BS, field: Computer Science, period: { start: "2014-09", end: "2018-05" } }
+  - { institution: Northbridge University, degree: Master of Science, field: Cybersecurity, honors: GPA 3.9, period: { start: "2017-09", end: "2019-12" } }
+  - { institution: State University, degree: BS, field: Computer Science, period: { start: "2011-09", end: "2013-12" } }
+  - { institution: Springfield Community College, degree: Associate of Science, field: Computer Science, period: { start: "2009-09", end: "2011-05" } }

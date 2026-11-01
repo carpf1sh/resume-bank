@@ -1,0 +1,16 @@
+id: northwind-2023-terraform-modules
+role_id: northwind-cloud-security-architect
+title: Secure Terraform modules
+period: { start: "2022-09", end: "2023-03" }
+star:
+  action: Published secure-by-default Terraform modules for common AWS services.
+  result: Adopted by 14 product teams.
+metrics:
+  - { value: 14, unit: teams, description: product teams using the modules, verified: true }
+skills: [Terraform, AWS]
+domains: [cloud-security, devsecops]
+visibility: resume
+strength: 3
+resume_bullets:
+  - Published secure-by-default Terraform modules for AWS, adopted by 14 product teams
+sources: [sources/resumes/2025-jane-doe-resume.txt]

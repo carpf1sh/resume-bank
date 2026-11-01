@@ -1,0 +1,18 @@
+id: northwind-2025-ir-automation
+role_id: northwind-cloud-security-architect
+title: Incident triage automation
+period: { start: "2025-02", end: "2025-11" }
+star:
+  situation: Analysts spent most of each alert gathering the same context by hand.
+  action: Led a three-person effort to automate enrichment in the SOAR and add LLM-written triage summaries with human review.
+  result: About 60% less analyst time per triaged alert.
+metrics:
+  - { value: 60, unit: "%", description: approx. reduction in analyst time per triaged alert, verified: false }
+skills: [SOAR, Incident Response, LLM Security, Python, Team Leadership]
+domains: [leadership, detection-response, ai-security]
+visibility: public
+public_text: Led an effort to automate incident triage, pairing SOAR enrichment with reviewed LLM-written summaries.
+strength: 4
+resume_bullets:
+  - Led a three-person team automating alert triage with SOAR enrichment and LLM summaries, cutting analyst time by about 60%
+sources: [sources/resumes/2025-jane-doe-resume.txt, interviews/2025-12-01-gaps.md]

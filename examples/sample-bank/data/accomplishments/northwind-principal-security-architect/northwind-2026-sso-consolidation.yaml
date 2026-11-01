@@ -1,0 +1,16 @@
+id: northwind-2026-sso-consolidation
+role_id: northwind-principal-security-architect
+title: SSO consolidation
+period: { start: "2026-02", end: "2026-06" }
+star:
+  action: Moved internal applications from local accounts to the company identity provider.
+  result: 40 applications moved to SSO.
+metrics:
+  - { value: 40, unit: applications, description: internal apps moved to SSO, verified: true }
+skills: [SSO, Zero Trust]
+domains: [iam]
+visibility: resume
+strength: 3
+resume_bullets:
+  - Consolidated 40 internal applications onto SSO, removing local accounts
+sources: [interviews/2026-03-10-checkin.md]

@@ -30,3 +30,5 @@ def test_sample_bank_builds(tmp_path: Path):
     page = (bank / "build" / "site" / "index.html").read_text(encoding="utf-8")
     assert "multi-account AWS landing zone" in page
     assert "Contoso Bank" not in page  # anonymized employer
+    assert "northwind-2026-vendor-escalation" not in page  # private item
+    assert (bank / "build" / "site" / "how-it-works.html").is_file()  # site/ overlay
