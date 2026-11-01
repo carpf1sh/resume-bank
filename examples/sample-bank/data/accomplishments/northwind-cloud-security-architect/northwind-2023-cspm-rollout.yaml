@@ -1,0 +1,18 @@
+id: northwind-2023-cspm-rollout
+role_id: northwind-cloud-security-architect
+title: CSPM rollout
+period: { start: "2023-01", end: "2023-09" }
+star:
+  situation: Misconfiguration findings were spread across tools with no clear owners.
+  action: Rolled out a CSPM across every AWS account, routed findings to owning teams, and fixed the common causes in Terraform modules.
+  result: 85% of critical findings remediated within SLA by the end of the year.
+metrics:
+  - { value: 85, unit: "%", description: critical findings remediated within SLA, verified: true }
+skills: [CSPM, AWS, Terraform]
+domains: [cloud-security]
+visibility: public
+public_text: Rolled out cloud security posture management across every AWS account, with findings routed to owning teams.
+strength: 4
+resume_bullets:
+  - Rolled out CSPM across all AWS accounts and routed findings to owners, reaching 85% critical remediation within SLA
+sources: [sources/resumes/2025-jane-doe-resume.txt]

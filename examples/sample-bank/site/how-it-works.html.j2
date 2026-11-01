@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How This Site Works · {{ name }}</title>
+  <meta name="description" content="This portfolio is a live demo of resume-bank, built from a fictional sample bank: how the bank, the agents, and the guardrails fit together.">
+  <link rel="canonical" href="{{ base_url }}how-it-works.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How This Site Works · {{ name }}">
+  <meta property="og:description" content="A demo of resume-bank, where AI proposes, code verifies, and a human approves.">
+  <meta property="og:url" content="{{ base_url }}how-it-works.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="explainer">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="bar-id" href="./"><b>{{ name | lower | replace(" ", "-") }}</b> / how-it-works</a>
+    <nav aria-label="Site">
+      <a href="./">← portfolio</a>
+      <button class="theme" type="button" aria-label="Toggle dark mode" hidden>◐</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="hero">
+    <h1>How this site works</h1>
+    <p class="headline">A live demo of resume-bank</p>
+    <p class="summary">
+      {{ name }} is fictional. Every employer, number, and credential on the portfolio comes from the sample bank in
+      <a href="https://github.com/carpf1sh/resume-bank/tree/main/examples/sample-bank" rel="noopener">resume-bank's <code>examples/sample-bank/</code></a>,
+      and this site is rebuilt from it on every change. A real bank lives in a private repo with the same layout and publishes the same way.
+    </p>
+  </div>
+
+  <ul class="stats" aria-label="At a glance">
+    <li><strong>{{ bank_count }}</strong><span>accomplishments in the sample bank</span></li>
+    <li><strong>{{ public_count }}</strong><span>approved for this site</span></li>
+    <li><strong>{{ bank_count - public_count }}</strong><span>kept off it (resume-only or private)</span></li>
+    <li><strong>5</strong><span>Claude Code skills</span></li>
+  </ul>
+
+  <nav class="toc" aria-label="Sections">
+    <a href="#design">The design</a>
+    <a href="#flow">How it flows</a>
+    <a href="#guardrails">Guardrails</a>
+    <a href="#try">Try it</a>
+  </nav>
+
+  <section id="design" aria-labelledby="design-h">
+    <h2 id="design-h">The design: AI proposes, code verifies, a human approves</h2>
+    <div class="layers">
+      <article class="layer">
+        <h3><span class="badge">Judgment</span> Claude Code skills</h3>
+        <ul>
+          <li><code>/ingest</code> reads past resumes and builds the bank, merging duplicate wins into one entry</li>
+          <li><code>/interview</code> asks the owner one question at a time to fill gaps and pin down results</li>
+          <li><code>/tailor</code> maps a job posting to evidence and drafts a cited, ATS-checked resume</li>
+          <li><code>/bank-review</code> drafts sanitized public text for items the owner chooses to publish</li>
+          <li><code>/publish</code> previews this site and shows exactly what changes before it goes live</li>
+        </ul>
+      </article>
+      <article class="layer">
+        <h3><span class="badge">Rules</span> The <code>rmgr</code> CLI</h3>
+        <ul>
+          <li>Schema validation of every bank file</li>
+          <li>A ranked gap report of weak spots</li>
+          <li>Resume rendering to Word, PDF, Markdown and plain text, plus an ATS check</li>
+          <li>A leak guard that fails the site build if anything private appears</li>
+        </ul>
+      </article>
+      <article class="layer">
+        <h3><span class="badge">Decisions</span> The owner</h3>
+        <ul>
+          <li>The only source of new facts; agents record answers, never inferences.</li>
+          <li>Approves every public item and every estimated metric.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section id="flow" aria-labelledby="flow-h">
+    <h2 id="flow-h">How it flows</h2>
+    <ol class="flow">
+      <li class="step">
+        <p class="step-k">Sources</p>
+        <p>Past resumes, a LinkedIn export, and interview transcripts.</p>
+      </li>
+      <li class="step">
+        <p class="step-k"><code>/ingest</code> + <code>/interview</code></p>
+        <p>Agents turn sources and answers into structured entries that cite where they came from.</p>
+      </li>
+      <li class="step step-core">
+        <p class="step-k">The bank</p>
+        <p>One YAML file per accomplishment: the full story, metrics, skills, a visibility level, and its sources.</p>
+      </li>
+      <li class="step step-fork">
+        <div class="fork">
+          <div>
+            <p class="step-k"><code>/tailor</code> → resume</p>
+            <p>A posting goes in; a two-page resume comes out, every bullet citing the entries behind it.</p>
+          </div>
+          <div>
+            <p class="step-k"><code>/bank-review</code> → this site</p>
+            <p>Public items only, rendered through the leak guard and deployed by GitHub Actions.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="guardrails" aria-labelledby="guardrails-h">
+    <h2 id="guardrails-h">Guardrails</h2>
+    <div class="cards grid2">
+      <article class="card">
+        <h3>Never invent</h3>
+        <p>Unknown values stay empty and become interview questions. Estimates are stored as unverified until confirmed.</p>
+      </article>
+      <article class="card">
+        <h3>Three visibility levels</h3>
+        <p>Every item is <em>public</em> (this site, through a separately written public line), <em>resume</em> (tailored resumes only), or <em>private</em> (never in any output).</p>
+      </article>
+      <article class="card">
+        <h3>Anonymized employers</h3>
+        <p>A role can carry a public employer name. The two bank roles on the portfolio show as "a regional bank", and the build fails if the real name appears.</p>
+      </article>
+      <article class="card">
+        <h3>A leak guard on every build</h3>
+        <p>The build scans every output file, including the PDF's text, for contact details, non-public ids, resume bullets, and full stories. One hit fails the build.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="try" aria-labelledby="try-h">
+    <h2 id="try-h">Try it</h2>
+    <p>Clone <a href="https://github.com/carpf1sh/resume-bank" rel="noopener">resume-bank</a> and build this site yourself:</p>
+<pre><code>uv sync
+uv run rmgr validate --strict --root examples/sample-bank
+uv run rmgr gaps --root examples/sample-bank
+uv run rmgr build site --root examples/sample-bank</code></pre>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p><a href="./">← Back to the portfolio</a> · <a href="https://github.com/carpf1sh/resume-bank" rel="noopener">resume-bank on GitHub</a></p>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

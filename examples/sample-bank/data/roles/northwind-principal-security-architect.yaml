@@ -1,0 +1,7 @@
+id: northwind-principal-security-architect
+employer: Northwind Cloud
+title: Principal Security Architect
+location: Remote
+period: { start: "2026-02", end: present }
+summary: Leads security architecture for a SaaS platform on AWS, including design reviews and AI platform adoption.
+sources: [interviews/2026-03-10-checkin.md]

@@ -1,0 +1,17 @@
+id: contoso-2021-siem-migration
+role_id: contoso-senior-security-engineer
+title: SIEM migration
+period: { start: "2021-02", end: "2021-12" }
+star:
+  action: Planned and ran the move to a new SIEM, porting detections and onboarding log sources.
+  result: 30 log sources onboarded with no gap in coverage.
+metrics:
+  - { value: 30, unit: log sources, description: log sources onboarded to the new SIEM, verified: true }
+skills: [SIEM, Detection Engineering]
+domains: [detection-response]
+visibility: public
+public_text: Led a SIEM migration, porting detections and onboarding log sources without a gap in coverage.
+strength: 3
+resume_bullets:
+  - Led a SIEM migration, onboarding 30 log sources and porting detections with no coverage gap
+sources: [sources/resumes/2025-jane-doe-resume.txt]

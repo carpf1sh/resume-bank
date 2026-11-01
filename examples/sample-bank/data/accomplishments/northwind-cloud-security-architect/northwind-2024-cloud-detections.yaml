@@ -1,0 +1,17 @@
+id: northwind-2024-cloud-detections
+role_id: northwind-cloud-security-architect
+title: Cloud detection pipeline
+period: { start: "2024-01", end: "2024-08" }
+star:
+  action: Built a pipeline that ships AWS audit logs to the SIEM and wrote cloud detections as code.
+  result: 25 cloud detections in production.
+metrics:
+  - { value: 25, unit: detections, description: cloud detections in production, verified: true }
+skills: [SIEM, Detection Engineering, AWS, Python]
+domains: [detection-response, cloud-security]
+visibility: public
+public_text: Built a cloud detection pipeline and a library of cloud detections maintained as code.
+strength: 3
+resume_bullets:
+  - Built an AWS log pipeline to the SIEM and shipped 25 cloud detections as code
+sources: [sources/resumes/2025-jane-doe-resume.txt]

@@ -1,7 +1,7 @@
 id: northwind-2024-ai-usage-reviews
 role_id: northwind-cloud-security-architect
 title: AI usage review process
-period: { start: "2024-02", end: present }
+period: { start: "2024-02", end: "2026-01" }
 star:
   situation: Engineering teams were adopting AI coding assistants without a review path.
   action: Built a lightweight review covering data handling, vendor terms, and tool permissions.

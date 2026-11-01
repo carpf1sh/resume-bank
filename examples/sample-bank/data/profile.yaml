@@ -1,5 +1,5 @@
 name: Jane Doe
-headline: Cloud Security Architect
+headline: Principal Security Architect
 location: Remote, US
 site_url: "https://example.github.io/resume/"
 contact:
@@ -7,13 +7,21 @@ contact:
   phone: 555-0100
   location: Springfield, IL
 links:
+  - { label: LinkedIn, url: "https://www.linkedin.com/in/example" }
   - { label: GitHub, url: "https://github.com/example" }
 target_roles:
+  - Security Architect
   - Cloud Security Architect
+  - AI Security
 target_domains:
   - security-architecture
   - cloud-security
   - ai-security
 summaries:
-  general: Security architect who builds cloud guardrails and review processes that let engineering teams move quickly.
-public_summary: Cloud security architect focused on landing zones, guardrails, and safe adoption of AI tools.
+  general: >-
+    Security architect with a decade of experience across cloud security, detection engineering, and security risk.
+    Builds cloud guardrails, review programs, and automation that let engineering teams move quickly and safely.
+public_summary: >-
+  Principal security architect at a SaaS company, focused on cloud and AI security. I lead security architecture
+  reviews, including reviews of enterprise AI platforms, and previously built the company's AWS landing zone and cloud
+  detection pipeline. Earlier, I ran detection engineering at a regional bank and security risk programs as a consultant.

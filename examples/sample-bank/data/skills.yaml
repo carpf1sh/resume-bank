@@ -1,12 +1,43 @@
 categories:
+  - name: Security Architecture
+    skills:
+      - { name: Security Architecture Review, aliases: [design review, architecture review] }
+      - { name: Threat Modeling, aliases: [STRIDE] }
+      - { name: Zero Trust }
   - name: Cloud Security
     skills:
       - { name: AWS, aliases: [Amazon Web Services] }
       - { name: Landing Zones, aliases: [landing zone, AWS Control Tower] }
       - { name: Service Control Policies, aliases: [SCP, SCPs] }
-  - name: Detection & Response
-    skills:
-      - { name: Detection Engineering, aliases: [detection-as-code] }
+      - { name: CSPM, aliases: [cloud security posture management] }
+      - { name: Terraform, aliases: [infrastructure as code, IaC] }
+      - { name: Kubernetes, aliases: [EKS, k8s] }
   - name: AI Security
     skills:
       - { name: AI Governance, aliases: [AI usage policy] }
+      - { name: LLM Security, aliases: [LLM application security] }
+      - { name: OWASP LLM Top 10 }
+  - name: Identity & Access
+    skills:
+      - { name: SSO, aliases: [single sign-on, SAML, OIDC] }
+  - name: Detection & Response
+    skills:
+      - { name: Detection Engineering, aliases: [detection-as-code] }
+      - { name: SIEM }
+      - { name: Incident Response, aliases: [IR] }
+      - { name: SOAR }
+  - name: Governance, Risk & Compliance
+    skills:
+      - { name: Risk Assessment }
+      - { name: NIST CSF, aliases: [NIST Cybersecurity Framework] }
+      - { name: SOC 2 }
+      - { name: Security Metrics, aliases: [KRIs] }
+      - { name: Third-Party Risk, aliases: [vendor risk, TPRM] }
+  - name: Leadership
+    skills:
+      - { name: Team Leadership }
+      - { name: Mentoring }
+  - name: Data & Automation
+    skills:
+      - { name: Python }
+      - { name: SQL }

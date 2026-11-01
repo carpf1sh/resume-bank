@@ -1,0 +1,17 @@
+id: wideworld-2015-access-reviews
+role_id: wideworld-it-compliance-analyst
+title: Quarterly access reviews
+period: { start: "2014-10", end: "2015-06" }
+star:
+  action: Automated the quarterly user access review for audit-scoped systems.
+  result: Review time fell from three weeks to one.
+metrics:
+  - { value: 2, unit: weeks, description: saved per quarterly review, verified: false }
+skills: [SOC 2, SQL]
+domains: [grc]
+visibility: public
+public_text: Automated quarterly user access reviews for audit-scoped systems.
+strength: 2
+resume_bullets:
+  - Automated quarterly access reviews for audit-scoped systems, saving about two weeks per cycle
+sources: [sources/resumes/2025-jane-doe-resume.txt]

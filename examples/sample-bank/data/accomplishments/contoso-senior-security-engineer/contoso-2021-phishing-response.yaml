@@ -1,0 +1,14 @@
+id: contoso-2021-phishing-response
+role_id: contoso-senior-security-engineer
+title: Phishing response playbook
+period: { start: "2021-04", end: "2021-07" }
+star:
+  action: Wrote and automated the phishing response playbook.
+  result: null
+skills: [Incident Response, SOAR]
+domains: [detection-response]
+visibility: resume
+strength: 2
+resume_bullets:
+  - Wrote and automated the phishing response playbook
+sources: [sources/resumes/2025-jane-doe-resume.txt]

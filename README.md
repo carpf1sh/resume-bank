@@ -4,6 +4,8 @@ An evidence-backed career bank, and the tooling that turns it into tailored, ATS
 
 The idea: keep every career claim once, as structured data with its full story and its source, then generate every resume and the public site from that data. AI agents interview you, draft, and tailor. Deterministic code checks their work. You approve anything that leaves the repo.
 
+**Live demo:** https://carpf1sh.github.io/resume-bank/ is the portfolio built from the fictional sample bank (Jane Doe), with its PDF resume. It redeploys on every change to the sample bank or the tool.
+
 This repo is the tool. Your bank lives in a **separate private repo** that pins this one. See [docs/architecture.md](docs/architecture.md).
 
 ## What's in it
@@ -14,7 +16,7 @@ This repo is the tool. Your bank lives in a **separate private repo** that pins 
 | JSON schemas for every bank file (generated from the pydantic models) | `schemas/` |
 | Claude Code plugin: `/ingest`, `/interview`, `/tailor`, `/bank-review`, `/publish` | `skills/`, `.claude-plugin/` |
 | Site templates (Jinja) | `src/resume_mgmt/templates/site/` |
-| A fictional sample bank to try everything on | `examples/sample-bank/` |
+| A fictional sample bank to try everything on (deployed as the live demo by `.github/workflows/sample-site.yml`) | `examples/sample-bank/` |
 | A reference publish workflow (bank repo → public Pages repo) | `examples/workflows/publish-site.yml` |
 | Posting format for an external job finder | `docs/job-posting-contract.md` |
 

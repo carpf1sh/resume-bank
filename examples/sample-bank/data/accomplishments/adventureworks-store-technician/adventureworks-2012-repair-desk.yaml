@@ -1,0 +1,12 @@
+id: adventureworks-2012-repair-desk
+role_id: adventureworks-store-technician
+title: Repair desk
+period: { start: "2011-06", end: "2013-12" }
+star:
+  action: Ran the in-store repair desk for phones and laptops.
+  result: null
+visibility: resume
+strength: 1
+resume_bullets:
+  - Ran the in-store repair desk for phones and laptops
+sources: [sources/resumes/2025-jane-doe-resume.txt]

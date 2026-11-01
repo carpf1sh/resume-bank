@@ -1,0 +1,7 @@
+id: fourthcoffee-security-consultant
+employer: Fourth Coffee
+title: Information Security Consultant
+location: Springfield, IL
+employment_type: contract
+period: { start: "2014-01", end: "2014-08" }
+sources: [sources/resumes/2025-jane-doe-resume.txt]

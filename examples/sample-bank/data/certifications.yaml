@@ -1,2 +1,5 @@
 certifications:
-  - { id: cissp, name: CISSP, issuer: ISC2, earned: "2021-09" }
+  - { id: cissp, name: Certified Information Systems Security Professional (CISSP), issuer: ISC2, earned: "2021-09" }
+  - { id: aws-security-specialty, name: AWS Certified Security - Specialty, issuer: Amazon Web Services, earned: "2023-06" }
+  # Lapsed; kept for reference only.
+  - { id: security-plus, name: CompTIA Security+, issuer: CompTIA, earned: "2015-03", visibility: private }

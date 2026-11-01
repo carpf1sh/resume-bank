@@ -1,0 +1,20 @@
+id: northwind-2026-ai-platform-reviews
+role_id: northwind-principal-security-architect
+title: Security reviews of enterprise AI platforms
+period: { start: "2026-02", end: present }
+star:
+  situation: Business teams wanted to adopt hosted AI platforms faster than security could assess them.
+  task: Give each platform a consistent, fast security review before company data reached it.
+  action: Built a review template covering data flows, model access, prompt injection, and vendor terms, and ran the reviews.
+  result: Six platforms reviewed in the first quarter, each with a clear go-live decision and follow-up actions.
+metrics:
+  - { value: 6, unit: platforms, description: AI platforms reviewed in the first quarter, verified: true }
+skills: [Security Architecture Review, LLM Security, OWASP LLM Top 10, Threat Modeling, AWS]
+domains: [ai-security, security-architecture, cloud-security]
+visibility: public
+public_text: Leads security architecture reviews of enterprise AI platforms, from data flows and model access to vendor terms.
+strength: 5
+resume_bullets:
+  - Led security architecture reviews of 6 enterprise AI platforms in one quarter, covering data flows, model access, and prompt injection
+sources: [interviews/2026-03-10-checkin.md]
+last_reviewed: "2026-03-10"
