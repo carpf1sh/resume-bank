@@ -118,6 +118,38 @@ def test_find_leaks_variants(bank: Path, text: str, leak: str):
     assert leak in find_leaks(validate(bank), f"<p>{text}</p>")
 
 
+def test_find_leaks_role_summary(bank: Path):
+    summary = "Owned security architecture for the payments platform"
+    write(bank, "data/roles/acme-architect.yaml", {**ROLE, "summary": summary})
+    assert "role summary of 'acme-architect'" in find_leaks(validate(bank), f"<p>{summary}</p>")
+
+
+def test_find_leaks_public_text_of_non_public_item(bank: Path):
+    text = "Led the response to a major ransomware outbreak"
+    write(bank, "data/accomplishments/acme-architect/acme-2022-private-incident.yaml", accomplishment(
+        id="acme-2022-private-incident", visibility="resume", public_text=text))
+    leaks = find_leaks(validate(bank), f"<p>{text}</p>")
+    assert "acme-2022-private-incident public_text of a non-public item" in leaks
+
+
+def test_short_phone_is_not_scanned(bank: Path):
+    write(bank, "data/profile.yaml", {"name": "T", "contact": {"phone": "x1234"}})
+    assert find_leaks(validate(bank), "<p>call 1234</p>") == []
+
+
+def test_find_leaks_without_profile(bank: Path):
+    (bank / "data/profile.yaml").unlink()
+    b = validate(bank)
+    assert b.profile is None
+    assert find_leaks(b, "<p>see acme-2022-private-incident</p>") == ["non-public id 'acme-2022-private-incident'"]
+
+
+def test_build_requires_profile(bank: Path):
+    (bank / "data/profile.yaml").unlink()
+    with pytest.raises(ValueError, match="profile.yaml"):
+        _build(bank)
+
+
 def test_public_location_equal_to_contact_location_is_fine(bank: Path):
     write(bank, "data/profile.yaml", {"name": "T", "location": "Denver, CO", "contact": {"location": "Denver, CO"}})
     assert find_leaks(validate(bank), "<p>Denver, CO</p>") == []
@@ -163,6 +195,17 @@ def test_site_diff_lists_newly_public(bank: Path):
     changes = {(c.kind, c.what) for c in public_diff(validate(bank), "HEAD")}
     assert changes == {("added", "accomplishment acme-2022-private-incident")}
 
+    write(bank, "data/roles/acme-architect.yaml", {**ROLE, "public_employer": "A fintech company"})
+    (bank / "data/education.yaml").unlink()
+    changes = {(c.kind, c.what) for c in public_diff(validate(bank), "HEAD")}
+    assert ("added", "role acme-architect employer") in changes
+    assert ("removed", "education State U") in changes
+
+
+def test_site_diff_outside_git_fails(bank: Path):
+    with pytest.raises(RuntimeError, match="git archive HEAD failed"):
+        public_diff(validate(bank), "HEAD")
+
 
 # --- PDF resume ---------------------------------------------------------------
 
@@ -173,13 +216,13 @@ def _fake_pdf(lines: list[str], out: Path) -> Path:
         return t.replace("\\", "\\\\").replace("(", r"\(").replace(")", r"\)")
 
     ops = "BT /F1 9 Tf 11 TL 36 760 Td " + " ".join(f"({esc(line)}) Tj T*" for line in lines) + " ET"
-    stream = ops.encode("latin-1", errors="replace")
+    stream = ops.encode("cp1252", errors="replace")
     objs = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
         b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
         b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
         b"<< /Length %d >>\nstream\n" % len(stream) + stream + b"\nendstream",
-        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     ]
     data, offsets = bytearray(b"%PDF-1.4\n"), []
     for i, obj in enumerate(objs, 1):

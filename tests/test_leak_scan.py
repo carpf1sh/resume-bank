@@ -3,7 +3,8 @@ from pathlib import Path
 from resume_mgmt.leak_scan import scan_tree
 from resume_mgmt.validate import validate
 
-from test_site import PUBLIC_TEXT, bank  # noqa: F401  (fixture)
+from test_site import PUBLIC_TEXT, _fake_pdf, bank  # noqa: F401  (fixture)
+from test_validate import ROLE, write
 
 
 def _tree(tmp: Path, files: dict[str, str | bytes]) -> Path:
@@ -41,6 +42,27 @@ def test_catches_bank_content(bank: Path, tmp_path_factory):
     assert any(path == "d.md" for path, _ in hits)
     assert any(path == "e.md" and what.startswith("employer") for path, what in hits)
     assert not any(path.startswith(".git") for path, _ in hits)
+
+
+def test_catches_role_summary(bank: Path, tmp_path_factory):
+    summary = "Owned security architecture for the payments platform"
+    write(bank, "data/roles/acme-architect.yaml", {**ROLE, "summary": summary})
+    tree = _tree(tmp_path_factory.mktemp("tool"), {"notes.md": summary.lower()})
+    assert ("notes.md", "summary of 'acme-architect'") in {(h.path, h.what) for h in scan_tree(validate(bank), tree)}
+
+
+def test_scans_pdf_text(bank: Path, tmp_path_factory):
+    tree = tmp_path_factory.mktemp("tool")
+    _fake_pdf(["Prepared by Test Person"], tree / "demo.pdf")
+    assert ("demo.pdf", "profile.name") in {(h.path, h.what) for h in scan_tree(validate(bank), tree)}
+
+
+def test_bank_without_profile_or_contact(bank: Path, tmp_path_factory):
+    tree = _tree(tmp_path_factory.mktemp("tool"), {"a.md": "Test Person, Denver, CO, see cspm-rollout"})
+    write(bank, "data/profile.yaml", {"name": "Someone Else"})
+    assert [h.what for h in scan_tree(validate(bank), tree)] == ["id 'cspm-rollout'"]
+    (bank / "data/profile.yaml").unlink()
+    assert [h.what for h in scan_tree(validate(bank), tree)] == ["id 'cspm-rollout'"]
 
 
 def test_extra_terms(bank: Path, tmp_path_factory):
