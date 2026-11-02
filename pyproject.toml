@@ -1,6 +1,6 @@
 [project]
 name = "resume-mgmt"
-version = "0.2.1"
+version = "0.3.0"
 description = "Evidence-backed career bank: validate accomplishments, tailor ATS-safe resumes, publish a leak-guarded portfolio"
 license = "Apache-2.0"
 readme = "README.md"
