@@ -29,7 +29,7 @@ from .render_pdf import render_pdf, require_soffice
 from .resume_doc import (
     ResumeContent, RoleEntry, SkillGroup, cert_line, degree_line, display_url, fmt_month, fmt_period, output_stem,
 )
-from .track import career_track
+from .track import CERT, DEGREE, ROLE, anchor, career_track
 
 TEMPLATES = Path(__file__).resolve().parent / "templates" / "site"
 # A bank can add pages or override packaged files from this folder under its root.
@@ -131,9 +131,11 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
             (a for a in public_accs if a.role_id == role.id),
             key=lambda a: (-(a.strength or 0), a.period.start if a.period else ""),
         )
+        employer = role.public_employer or role.employer
         timeline.append({
+            "id": anchor(ROLE, employer, role.title),
             "title": role.title,
-            "employer": role.public_employer or role.employer,
+            "employer": employer,
             "dates": fmt_period(role.period),
             "start": role.period.start,
             "highlights": [_item(a.public_text, shown_skills(a), a.domains, idx) for a in accs],
@@ -218,12 +220,12 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
         "matrix_domains": [{"slug": d, "label": DOMAIN_LABELS[d]} for d in domains_seen],
         "matrix": matrix,
         "certifications": [
-            {"name": c.name, "issuer": c.issuer, "earned": fmt_month(c.earned) if c.earned else None, "verify_url": c.verify_url,
+            {"id": anchor(CERT, c.name), "name": c.name, "issuer": c.issuer, "earned": fmt_month(c.earned) if c.earned else None, "verify_url": c.verify_url,
              "lapsed": fmt_month(c.expires) if c.lapsed(month) else None}
             for c in certs
         ],
         "education": [
-            {"institution": d.institution, "degree": d.degree, "field": d.field, "honors": d.honors,
+            {"id": anchor(DEGREE, d.degree, d.field, d.institution), "institution": d.institution, "degree": d.degree, "field": d.field, "honors": d.honors,
              "dates": fmt_period(d.period)}
             for d in degrees
         ],

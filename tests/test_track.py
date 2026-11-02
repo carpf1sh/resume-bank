@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from resume_mgmt.models import Certification
-from resume_mgmt.site import public_resume_content, site_context
+from resume_mgmt.site import build_site, public_resume_content, site_context
 from resume_mgmt.track import career_track, short_cert, short_degree, short_employer
 from resume_mgmt.validate import validate
 
@@ -109,8 +109,19 @@ def test_track_marks(bank: Path):
     assert svg.count('class="tk-x"') == 2  # one per drawing
     assert "Ancient" not in svg and "Red Badge" not in svg
     # the current role is where the detail line starts
-    current = re.search(r'<g class="tk-hit tk-role tk-current"[^>]*data-detail="([^"]+)"', svg)
+    current = re.search(r'<a class="tk-hit tk-role tk-current"[^>]*data-detail="([^"]+)"', svg)
     assert current.group(1) == "Security Lead · Beta Corporation"
+
+
+def test_track_marks_link_to_their_entries(bank: Path):
+    out = bank / "build" / "site"
+    build_site(validate(bank), out, "https://example.test/", pdf=False)
+    page = (out / "index.html").read_text(encoding="utf-8")
+    targets = set(re.findall(r'<a class="tk-hit[^"]*" href="#([^"]+)"', page))
+    assert {"role-beta-corporation-security-lead", "cert-giac-certified-incident-handler-gcih",
+            "degree-master-of-science-cybersecurity-night-school"} <= targets
+    for target in targets:
+        assert page.count(f'id="{target}"') == 1, target
 
 
 def test_track_lanes_do_not_collide(bank: Path):
