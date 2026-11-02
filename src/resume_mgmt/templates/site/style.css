@@ -33,6 +33,9 @@
   --d-grc: #3b5b8c;
   --d-leadership: #2b7a3d;
   --d-other: #5d6576;
+  /* career track: degrees and certifications (roles use --accent) */
+  --tk-degree: #1d7a55;
+  --tk-cert: #b8481e;
   --f-text: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --f-mono: "Geist Mono", ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
   color-scheme: light;
@@ -54,6 +57,8 @@
     --d-grc: #9db8e6;
     --d-leadership: #8fd6a0;
     --d-other: #8d95a8;
+    --tk-degree: #6fd3a5;
+    --tk-cert: #f4a27a;
     color-scheme: dark;
   }
 }
@@ -73,6 +78,8 @@
   --d-grc: #9db8e6;
   --d-leadership: #8fd6a0;
   --d-other: #8d95a8;
+  --tk-degree: #6fd3a5;
+  --tk-cert: #f4a27a;
   color-scheme: dark;
 }
 
@@ -153,6 +160,39 @@ section { margin: 56px 0; scroll-margin-top: 16px; }
 h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; }
 .sec-head .count, .note { font: 0.8rem var(--f-mono); color: var(--muted); }
 .note { margin: -6px 0 14px; }
+
+/* --- career track: roles on main, degrees branch and merge, certs branch and end when they lapse --- */
+.track { margin: 0 0 18px; padding: 14px 16px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.tk { display: block; width: 100%; height: auto; overflow: visible; }
+.tk-narrow { display: none; max-width: 420px; }
+.tk-ln { fill: none; stroke-width: 2; }
+.tk-ln-role { stroke: var(--accent); stroke-width: 2.5; }
+.tk-ln-deg { stroke: var(--tk-degree); }
+.tk-ln-cert { stroke: var(--tk-cert); }
+.tk-dot { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.tk-dot-deg, .tk-tip-deg { stroke: var(--tk-degree); }
+.tk-tip { fill: var(--surface); stroke-width: 2; }
+.tk-tip-cert { stroke: var(--tk-cert); }
+.tk-diamond { fill: var(--tk-cert); stroke: var(--tk-cert); stroke-width: 2; }
+.tk-x { stroke: var(--muted); stroke-width: 2; }
+.tk-tick { stroke: var(--line); }
+.tk-tx { font: 11px var(--f-mono); fill: var(--text); }
+.tk-tx-muted { fill: var(--muted); }
+.tk-tx-deg { fill: var(--tk-degree); }
+.tk-tx-cert { fill: var(--tk-cert); }
+.tk-hit { outline: none; }
+.js .tk-hit { cursor: pointer; }
+.tk-hit:hover > *, .tk-hit:focus-visible > *, .tk-hit.on > * { stroke-width: 3.5; }
+.tk-hit:focus-visible > * { stroke: var(--text); }
+.tk-detail { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 16px;
+  margin-top: 10px; padding: 8px 12px; border-radius: 6px; background: var(--bg); font-size: 0.88rem; }
+.tk-detail[hidden] { display: none; }
+.tk-detail time { font: 0.78rem var(--f-mono); color: var(--muted); white-space: nowrap; }
+.lapsed { font: 0.7rem/1 var(--f-mono); color: var(--muted); border: 1px dashed var(--muted); border-radius: 4px; padding: 2px 5px; }
+@media (max-width: 600px) {
+  .tk-wide { display: none; }
+  .tk-narrow { display: block; }
+}
 
 /* --- filter --- */
 .filters { margin-bottom: 18px; display: grid; gap: 10px; }
@@ -289,7 +329,9 @@ code { font-family: var(--f-mono); font-size: 0.86em; background: var(--accent-w
 
 @media print {
   :root { --bg: #fff; --surface: #fff; --text: #000; --muted: #444; --line: #ccc; --accent: #000; --accent-wash: #eee; }
-  .bar, .filters, .toc, .theme, .skip, .resume-pdf { display: none !important; }
+  .bar, .filters, .toc, .theme, .skip, .resume-pdf, .tk-detail { display: none !important; }
+  .tk-wide { display: block !important; }
+  .tk-narrow { display: none !important; }
   .links a { border: 0; padding: 0; }
   .filtered-out { display: block !important; }
   .hero { padding: 0 0 12px; }

@@ -192,12 +192,17 @@ class Accomplishment(Strict):
 class Certification(Strict):
     id: Slug
     name: str
+    short_name: str | None = Field(None, description="Label for tight spaces such as the site's career track, e.g. 'AWS Security'")
     issuer: str
     earned: YearMonth | None = None
     expires: YearMonth | None = None
     credential_id: str | None = None
     verify_url: str | None = None
     visibility: Visibility = "public"
+
+    def lapsed(self, month: str) -> bool:
+        """Whether the cert had expired by `month` (YYYY-MM). It stays valid through its `expires` month."""
+        return self.expires is not None and self.expires < month
 
 
 class Certifications(Strict):

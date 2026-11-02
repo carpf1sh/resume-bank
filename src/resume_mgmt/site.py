@@ -17,6 +17,7 @@ import re
 import shutil
 import tempfile
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
@@ -28,6 +29,7 @@ from .render_pdf import render_pdf, require_soffice
 from .resume_doc import (
     ResumeContent, RoleEntry, SkillGroup, cert_line, degree_line, display_url, fmt_month, fmt_period, output_stem,
 )
+from .track import career_track
 
 TEMPLATES = Path(__file__).resolve().parent / "templates" / "site"
 # A bank can add pages or override packaged files from this folder under its root.
@@ -104,8 +106,14 @@ def _item(text: str, skills: list[str], domains: list[str], idx: SkillIndex) -> 
     }
 
 
-def site_context(bank: Bank, base_url: str) -> dict:
-    """Everything the templates may see. Nothing private goes in here."""
+def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
+    """Everything the templates may see. Nothing private goes in here.
+
+    `today` decides which certifications have lapsed: they stay on the page, marked as lapsed,
+    but leave the JSON-LD and the PDF resume.
+    """
+    today = today or date.today()
+    month = f"{today.year:04d}-{today.month:02d}"
     profile = bank.profile
     idx = SkillIndex.from_bank(bank)
 
@@ -187,7 +195,7 @@ def site_context(bank: Bank, base_url: str) -> dict:
         "hasCredential": [
             {"@type": "EducationalOccupationalCredential", "name": c.name,
              "recognizedBy": {"@type": "Organization", "name": c.issuer}}
-            for c in certs
+            for c in certs if not c.lapsed(month)
         ],
     }
     if profile.location:
@@ -203,12 +211,15 @@ def site_context(bank: Bank, base_url: str) -> dict:
         "links": [{"label": link.label, "url": link.url} for link in profile.links],
         "base_url": base_url,
         "timeline": timeline,
+        "track": career_track(bank, today),
+        "month": month,
         "domain_chips": domain_chips,
         "skill_chips": skill_chips,
         "matrix_domains": [{"slug": d, "label": DOMAIN_LABELS[d]} for d in domains_seen],
         "matrix": matrix,
         "certifications": [
-            {"name": c.name, "issuer": c.issuer, "earned": fmt_month(c.earned) if c.earned else None, "verify_url": c.verify_url}
+            {"name": c.name, "issuer": c.issuer, "earned": fmt_month(c.earned) if c.earned else None, "verify_url": c.verify_url,
+             "lapsed": fmt_month(c.expires) if c.lapsed(month) else None}
             for c in certs
         ],
         "education": [
@@ -232,10 +243,11 @@ def public_resume_content(bank: Bank, ctx: dict) -> ResumeContent:
     """The general resume, built only from the public site context.
 
     The contact line is the public location and profile links, never
-    `profile.contact`. Experience bullets are `public_text`, never `resume_bullets`.
+    `profile.contact`. Experience bullets are `public_text`, never `resume_bullets`. Lapsed
+    certifications are left out: a resume lists credentials as current.
     """
     certs = sorted(
-        (c for c in bank.certifications.certifications if c.visibility == "public"),
+        (c for c in bank.certifications.certifications if c.visibility == "public" and not c.lapsed(ctx["month"])),
         key=lambda c: c.earned or "", reverse=True,
     )
     return ResumeContent(
@@ -355,7 +367,7 @@ def _clear(out_dir: Path) -> None:
 
 
 def build_site(
-    bank: Bank, out_dir: Path, base_url: str, templates: Path = TEMPLATES, pdf: bool = True,
+    bank: Bank, out_dir: Path, base_url: str, templates: Path = TEMPLATES, pdf: bool = True, today: date | None = None,
 ) -> list[Path]:
     """Render the site into `out_dir`. Raises SiteLeakError (and deletes the output) on a leak.
 
@@ -387,7 +399,7 @@ def build_site(
         trim_blocks=True,
         lstrip_blocks=True,
     )
-    ctx = site_context(bank, base_url)
+    ctx = site_context(bank, base_url, today)
     ctx["pages"] = sorted(rel.with_suffix("").as_posix() for rel in sources if rel.suffix == ".j2")
     written: list[Path] = []
     if pdf:

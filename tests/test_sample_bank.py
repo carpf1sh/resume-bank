@@ -32,3 +32,5 @@ def test_sample_bank_builds(tmp_path: Path):
     assert "Contoso Bank" not in page  # anonymized employer
     assert "northwind-2026-vendor-escalation" not in page  # private item
     assert (bank / "build" / "site" / "how-it-works.html").is_file()  # site/ overlay
+    assert 'class="tk tk-wide"' in page  # career track
+    assert "GIAC Certified Incident Handler (GCIH) · GIAC · lapsed" in page

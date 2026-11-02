@@ -213,10 +213,12 @@ def tailored_with(bank: Path, **overrides) -> None:
     ({"roles": [{"role_id": "nope"}]}, "unknown role_id 'nope'"),
     ({"certifications": ["nope"]}, "unknown certification 'nope'"),
     ({"certifications": ["secret-cert"]}, "private certification 'secret-cert'"),
+    ({"certifications": ["old-cert"]}, "certification 'old-cert' had lapsed (2026-10)"),
 ])
 def test_tailored_resume_reference_errors(bank: Path, overrides: dict, error: str):
     write(bank, "data/certifications.yaml", {"certifications": [
-        {"id": "secret-cert", "name": "Secret", "issuer": "Acme", "visibility": "private"}]})
+        {"id": "secret-cert", "name": "Secret", "issuer": "Acme", "visibility": "private"},
+        {"id": "old-cert", "name": "Old", "issuer": "Acme", "expires": "2026-10"}]})
     tailored_with(bank, **overrides)
     assert error in messages(bank)
 
@@ -252,3 +254,11 @@ def test_exported_schemas_are_current(stem: str):
     assert json.loads(path.read_text(encoding="utf-8")) == EXPORTED_SCHEMAS[stem].model_json_schema(), (
         "schemas/ is stale: run `uv run rmgr schema`"
     )
+
+
+def test_tailored_cert_judged_at_application_date(bank: Path):
+    """A cert that lapsed after the application was sent doesn't make the old resume invalid."""
+    write(bank, "data/certifications.yaml", {"certifications": [
+        {"id": "old-cert", "name": "Old", "issuer": "Acme", "expires": "2026-11"}]})
+    tailored_with(bank, certifications=["old-cert"])
+    assert not any("lapsed" in m for m in messages(bank))
