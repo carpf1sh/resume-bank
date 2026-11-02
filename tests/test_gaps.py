@@ -112,3 +112,17 @@ def test_current_role_ranks_above_old_role(bank: Path):
           accomplishment(id="new", role_id="beta-engineer", period=None, strength=2))
     ranked = [g.target for g in gaps_by_kind(bank)["missing-result"]]
     assert ranked == ["new", "old"]
+
+
+def test_unevidenced_skills_skips_missing_taxonomy_and_categories(bank: Path):
+    write(bank, "data/accomplishments/acme-architect/cspm-rollout.yaml", accomplishment())
+    write(bank, "data/skills.yaml", {"categories": [{"name": "Cloud Security", "skills": [{"name": "CIEM"}]}]})
+    assert [g.target for g in gaps_by_kind(bank)["unevidenced-skills"]] == ["cloud-security"]  # no AI Security category
+    (bank / "data/skills.yaml").unlink()
+    assert "unevidenced-skills" not in gaps_by_kind(bank)
+
+
+def test_current_role_is_not_an_employment_gap(bank: Path):
+    write(bank, "data/roles/acme-architect.yaml", {**ROLE, "period": {"start": "2020-01", "end": "present"}})
+    write(bank, "data/roles/beta-engineer.yaml", {**ROLE, "id": "beta-engineer", "period": {"start": "2024-01", "end": "present"}})
+    assert "employment-gap" not in gaps_by_kind(bank)

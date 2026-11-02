@@ -250,3 +250,103 @@ def test_inbox_flags_duplicates_and_invalid(bank: Path):
     assert "company" in items["bad.md"].error and "frontmatter" in items["raw.md"].error
     assert {w.path for w in b.warnings} >= {"jobs/inbox/bad.md", "jobs/inbox/raw.md"}
     assert normalize_url("https://www.Acme.example/jobs/1/#apply") == "acme.example/jobs/1"
+
+
+def test_structure_check_flags_text_boxes_graphics_and_columns(tmp_path: Path):
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+
+    doc = Document()
+    pict = OxmlElement("w:pict")
+    pict.append(OxmlElement("w:txbxContent"))
+    doc.add_paragraph().add_run()._r.append(pict)
+    cols = OxmlElement("w:cols")
+    cols.set(qn("w:num"), "2")
+    doc.sections[0]._sectPr.append(cols)
+    doc.sections[0].footer.paragraphs[0].text = "Page 1"
+    doc.save(str(tmp_path / "t.docx"))
+    layout, hf = check_structure(tmp_path / "t.docx")
+    assert layout.detail == "found text boxes, graphics, multiple columns"
+    assert not hf.ok and hf.detail == "Page 1"
+
+
+def test_section_order_checks(bank: Path):
+    from resume_mgmt.ats import check_sections
+
+    c, _ = content(bank)
+    text = "\n".join(c.lines())
+    assert check_sections("x", text, c).ok
+    assert check_sections("x", text.replace("\nSkills\n", "\nSkills:\n"), c).detail == (
+        "heading 'Skills' not found on its own line")
+    moved = text.replace("\nSummary\n", "\n") + "\nSummary"
+    assert not check_sections("x", moved, c).ok
+
+
+def test_report_coverage_and_json(bank: Path, tmp_path: Path):
+    c, b = content(bank)
+    docx = render_docx(c, tmp_path / "out.docx")
+    report = run_ats_check(c, docx, None)
+    assert report.keywords == [] and report.coverage is None
+    report = run_ats_check(c, docx, None, read_posting(bank / APP / "posting.md").body, b.skills, ["Terraform"])
+    data = report.to_dict()
+    assert data["coverage"] == pytest.approx(3 / 4)
+    assert data["ok"] is False and data["pages"] is None
+    assert {"keyword": "Terraform", "covered": False, "posting_terms": ["Terraform"], "resume_terms": []} in data["keywords"]
+
+
+def test_load_content_errors(bank: Path):
+    b = validate(bank)
+    with pytest.raises(ValueError, match="resume.yaml not found"):
+        load_content(b, bank / "applications")
+    b.profile = None
+    with pytest.raises(ValueError, match="profile.yaml is missing"):
+        load_content(b, bank / APP)
+
+
+def test_new_application_from_text_and_plain_docx(bank: Path):
+    write(bank, "jobs/inbox/raw.txt", "Detection Engineer\n\nWrite detections.\n")
+    folder = new_application(bank, bank / "jobs/inbox/raw.txt", company="Beta", title="Detection Engineer",
+                             on=date(2026, 11, 2))
+    assert "Write detections." in read_posting(folder / "posting.md").body
+
+    doc = Document()
+    doc.add_paragraph("About the team.")
+    doc.add_paragraph("")
+    doc.save(str(bank / "jobs/inbox/plain.docx"))
+    folder = new_application(bank, bank / "jobs/inbox/plain.docx", company="Gamma", title="Engineer",
+                             on=date(2026, 11, 2))
+    assert read_posting(folder / "posting.md").body.strip() == "About the team."
+
+
+# --- LibreOffice discovery ------------------------------------------------------
+
+
+def test_find_soffice_order(tmp_path: Path, monkeypatch):
+    import resume_mgmt.render_pdf as rp
+
+    exe = tmp_path / "soffice.exe"
+    exe.write_text("", encoding="utf-8")
+    monkeypatch.setenv("RMGR_SOFFICE", str(exe))
+    assert rp.find_soffice() == str(exe)
+    monkeypatch.setenv("RMGR_SOFFICE", str(tmp_path / "missing.exe"))
+    assert rp.find_soffice() is None  # an explicit but wrong path is not silently ignored
+    with pytest.raises(rp.SofficeNotFound, match="RMGR_SOFFICE"):
+        rp.require_soffice()
+
+    monkeypatch.delenv("RMGR_SOFFICE")
+    monkeypatch.setattr(rp.shutil, "which", lambda name: f"/opt/{name}" if name == "libreoffice" else None)
+    assert rp.find_soffice() == "/opt/libreoffice"
+    monkeypatch.setattr(rp.shutil, "which", lambda name: None)
+    monkeypatch.setattr(rp, "CANDIDATES", [str(tmp_path / "nope"), str(exe)])
+    assert rp.find_soffice() == str(exe)
+
+
+def test_render_pdf_reports_failed_conversion(tmp_path: Path, monkeypatch):
+    import sys
+
+    monkeypatch.setenv("RMGR_SOFFICE", sys.executable)  # exits with an error and writes no PDF
+    docx = tmp_path / "r.docx"
+    Document().save(str(docx))
+    with pytest.raises(RuntimeError, match="did not produce a PDF"):
+        render_pdf(docx, tmp_path / "r.pdf", timeout=60)
+    assert not (tmp_path / "r.pdf").exists()

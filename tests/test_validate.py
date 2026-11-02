@@ -166,6 +166,86 @@ def test_tailored_cannot_cite_unknown(bank: Path):
     assert any("unknown accomplishment 'made-up'" in m for m in messages(bank))
 
 
+def test_invalid_yaml(bank: Path):
+    write(bank, "data/roles/acme-architect.yaml", "id: [unclosed")
+    assert any(m.startswith("invalid YAML") for m in messages(bank))
+
+
+def test_empty_file(bank: Path):
+    write(bank, "data/roles/acme-architect.yaml", "")
+    assert "file is empty" in messages(bank)
+
+
+def test_missing_singleton_is_warning(bank: Path):
+    (bank / "data/skills.yaml").unlink()
+    result = validate(bank)
+    assert result.errors == []
+    assert [str(w) for w in result.warnings] == ["data/skills.yaml: not found (create it during /ingest)"]
+
+
+def test_role_file_must_match_id(bank: Path):
+    (bank / "data/roles/acme-architect.yaml").unlink()
+    write(bank, "data/roles/acme.yaml", ROLE)
+    assert "file name must match id 'acme-architect'" in messages(bank)
+
+
+def test_duplicate_certification_id(bank: Path):
+    cert = {"id": "cissp", "name": "CISSP", "issuer": "ISC2"}
+    write(bank, "data/certifications.yaml", {"certifications": [cert, cert]})
+    assert any("duplicate id 'cissp'" in m for m in messages(bank))
+
+
+def test_certification_id_clashes_with_accomplishment(bank: Path):
+    write(bank, "data/certifications.yaml", {"certifications": [{"id": "cspm-rollout", "name": "X", "issuer": "Y"}]})
+    assert any("duplicate id 'cspm-rollout'" in m for m in messages(bank))
+
+
+def tailored_with(bank: Path, **overrides) -> None:
+    tailored(bank, ["cspm-rollout"])
+    path = bank / "applications/2026-11-01-acme-architect/resume.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data.update(overrides)
+    write(bank, "applications/2026-11-01-acme-architect/resume.yaml", data)
+
+
+@pytest.mark.parametrize("overrides, error", [
+    ({"posting": "missing.md"}, "posting not found: missing.md"),
+    ({"roles": [{"role_id": "nope"}]}, "unknown role_id 'nope'"),
+    ({"certifications": ["nope"]}, "unknown certification 'nope'"),
+    ({"certifications": ["secret-cert"]}, "private certification 'secret-cert'"),
+])
+def test_tailored_resume_reference_errors(bank: Path, overrides: dict, error: str):
+    write(bank, "data/certifications.yaml", {"certifications": [
+        {"id": "secret-cert", "name": "Secret", "issuer": "Acme", "visibility": "private"}]})
+    tailored_with(bank, **overrides)
+    assert error in messages(bank)
+
+
+def test_tailored_bullet_must_cite_same_role(bank: Path):
+    write(bank, "data/roles/beta-engineer.yaml", {**ROLE, "id": "beta-engineer", "employer": "Beta"})
+    tailored_with(bank, roles=[{"role_id": "beta-engineer", "bullets": [{"text": "x", "sources": ["cspm-rollout"]}]}])
+    assert "bullet under 'beta-engineer' cites 'cspm-rollout' from 'acme-architect'" in messages(bank)
+
+
+def test_tailored_unknown_skill_is_warning(bank: Path):
+    write(bank, "data/skills.yaml", {"categories": [{"name": "Cloud", "skills": [{"name": "CSPM"}]}]})
+    tailored_with(bank, skills=["cspm", "Basket Weaving"])
+    result = validate(bank)
+    assert result.errors == []
+    assert [w.message for w in result.warnings if w.path.endswith("resume.yaml")] == [
+        "skills not in data/skills.yaml: Basket Weaving"
+    ]
+
+
+def test_status_history_out_of_order_warns(bank: Path):
+    tailored(bank, ["cspm-rollout"])
+    write(bank, "applications/2026-11-01-acme-architect/status.yaml", {
+        "company": "Acme", "title": "X", "created": "2026-11-01", "stage": "applied",
+        "history": [{"date": "2026-11-05", "stage": "drafted"}, {"date": "2026-11-02", "stage": "applied"}],
+    })
+    assert [w.message for w in validate(bank).warnings] == ["history is not in date order"]
+
+
 @pytest.mark.parametrize("stem", EXPORTED_SCHEMAS)
 def test_exported_schemas_are_current(stem: str):
     path = REPO / "schemas" / f"{stem}.schema.json"
