@@ -24,6 +24,7 @@
   <div class="wrap">
     <a class="bar-id" href="./"><b>{{ name | lower | replace(" ", "-") }}</b> / portfolio</a>
     <nav aria-label="Sections">
+      {% if capabilities %}<span class="views"><a href="./" aria-current="page">by role</a><a href="capabilities.html">by capability</a></span>{% endif %}
       <a href="#experience">experience</a>
       {% if matrix %}<a href="#skills">skills</a>{% endif %}
       {% if certifications %}<a href="#certifications">certifications</a>{% endif %}
