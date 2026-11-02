@@ -107,6 +107,9 @@ def _check_tailored(bank: Bank) -> None:
                 bank.errors.append(Issue(rel, f"unknown certification '{cid}'"))
             elif cert.visibility == "private":
                 bank.errors.append(Issue(rel, f"private certification '{cid}'"))
+            elif APP_DIR.match(Path(app_dir).name) and cert.lapsed(Path(app_dir).name[:7]):
+                # Judged at the application's date, so a resume sent while the cert was valid stays valid.
+                bank.errors.append(Issue(rel, f"certification '{cid}' had lapsed ({cert.expires})"))
         for pid in tr.projects:
             proj = bank.projects.get(pid)
             if proj is None:

@@ -12,6 +12,19 @@
           "title": "Name",
           "type": "string"
         },
+        "short_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Label for tight spaces such as the site's career track, e.g. 'AWS Security'",
+          "title": "Short Name"
+        },
         "issuer": {
           "title": "Issuer",
           "type": "string"

@@ -63,6 +63,13 @@
       <h2 id="experience-h">Experience</h2>
       <span class="count">{{ public_count }} highlights · {{ timeline | length }} roles</span>
     </div>
+    {% if track %}
+    <figure class="track">
+      {{ track.wide }}
+      {{ track.narrow }}
+      <figcaption class="tk-detail" aria-live="polite" hidden><span></span><time></time></figcaption>
+    </figure>
+    {% endif %}
     {% if skill_chips %}
     <div class="filters" hidden>
       <div class="query">
@@ -138,7 +145,7 @@
       {% for c in certifications %}
       <li class="card">
         <h3>{% if c.verify_url %}<a href="{{ c.verify_url }}" rel="noopener">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</h3>
-        <p class="meta">{{ c.issuer }}{% if c.earned %} · <time>{{ c.earned }}</time>{% endif %}</p>
+        <p class="meta">{{ c.issuer }}{% if c.earned %} · <time>{{ c.earned }}</time>{% endif %}{% if c.lapsed %} – <time>{{ c.lapsed }}</time> <span class="lapsed">lapsed</span>{% endif %}</p>
       </li>
       {% endfor %}
     </ul>

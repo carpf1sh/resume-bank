@@ -1,5 +1,6 @@
-// Experience filter (domain tiles, skill chips, free-text query) plus the light/dark toggle.
-// Without JavaScript every item stays visible and the filter controls stay hidden.
+// Experience filter (domain tiles, skill chips, free-text query), the career track's detail line,
+// and the light/dark toggle. Without JavaScript every item stays visible, the filter controls stay
+// hidden, and the track's marks fall back to their <title> tooltips.
 (function () {
   "use strict";
 
@@ -20,6 +21,29 @@
       root.setAttribute("data-theme", next);
       try { localStorage.setItem("theme", next); } catch (e) { /* private mode */ }
     });
+  }
+
+  // Career track: hover, focus or tap a mark to show its detail line. Starts on the current role.
+  var track = document.querySelector(".track");
+  var detail = track && track.querySelector(".tk-detail");
+  if (detail) {
+    var marks = Array.prototype.slice.call(track.querySelectorAll(".tk-hit"));
+    var showMark = function (mark) {
+      // Both drawings carry the same marks; highlight the match in each.
+      marks.forEach(function (m) {
+        m.classList.toggle("on", m.getAttribute("data-detail") === mark.getAttribute("data-detail"));
+      });
+      detail.firstChild.textContent = mark.getAttribute("data-detail");
+      detail.lastChild.textContent = mark.getAttribute("data-dates");
+    };
+    var pick = function (ev) {
+      var mark = ev.target.closest && ev.target.closest(".tk-hit");
+      if (mark) showMark(mark);
+    };
+    ["mouseover", "focusin", "click"].forEach(function (type) { track.addEventListener(type, pick); });
+    var current = track.querySelector(".tk-current");
+    if (current) showMark(current);
+    detail.hidden = false;
   }
 
   var timeline = document.querySelector(".timeline");

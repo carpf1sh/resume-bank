@@ -1,5 +1,7 @@
 certifications:
   - { id: cissp, name: Certified Information Systems Security Professional (CISSP), issuer: ISC2, earned: "2021-09" }
-  - { id: aws-security-specialty, name: AWS Certified Security - Specialty, issuer: Amazon Web Services, earned: "2023-06" }
+  - { id: aws-security-specialty, name: AWS Certified Security - Specialty, short_name: AWS Security, issuer: Amazon Web Services, earned: "2023-06" }
+  # Lapsed but public: the site shows it as a branch that ended; resumes leave it out.
+  - { id: gcih, name: GIAC Certified Incident Handler (GCIH), issuer: GIAC, earned: "2019-04", expires: "2023-04" }
   # Lapsed; kept for reference only.
   - { id: security-plus, name: CompTIA Security+, issuer: CompTIA, earned: "2015-03", visibility: private }

@@ -88,8 +88,8 @@ def test_leak_guard_fails_on_injected_private_item(bank: Path, monkeypatch):
 
     real = site.site_context
 
-    def leaky(bank_, base_url):
-        ctx = real(bank_, base_url)
+    def leaky(bank_, base_url, today=None):
+        ctx = real(bank_, base_url, today)
         private = bank_.accomplishments["acme-2022-private-incident"]
         ctx["timeline"][0]["highlights"].append(site._item(private.resume_bullets[0], [], [], site.SkillIndex()))
         ctx["summary"] = f"Reach me at {bank_.profile.contact.email}, ref acme-2022-private-incident"
