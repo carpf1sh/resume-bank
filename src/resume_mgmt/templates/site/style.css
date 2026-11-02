@@ -156,6 +156,11 @@ p { margin: 0; }
 
 /* --- sections --- */
 section { margin: 56px 0; scroll-margin-top: 16px; }
+/* Entries the career track links to: land with room above, and flash so the eye finds them. */
+.role, .card { scroll-margin-top: 16px; }
+.role:target, .card:target { animation: tk-flash 1.6s ease-out; }
+@keyframes tk-flash { from { background: color-mix(in srgb, var(--accent) 14%, transparent); } }
+@media (prefers-reduced-motion: reduce) { .role:target, .card:target { animation: none; outline: 2px solid var(--accent); } }
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; margin-bottom: 16px; }
 h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; }
 .sec-head .count, .note { font: 0.8rem var(--f-mono); color: var(--muted); }
@@ -181,7 +186,7 @@ h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; 
 .tk-tx-deg { fill: var(--tk-degree); }
 .tk-tx-cert { fill: var(--tk-cert); }
 .tk-hit { outline: none; }
-.js .tk-hit { cursor: pointer; }
+.tk-hit { cursor: pointer; }
 .tk-hit:hover > *, .tk-hit:focus-visible > *, .tk-hit.on > * { stroke-width: 3.5; }
 .tk-hit:focus-visible > * { stroke: var(--text); }
 .tk-detail { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 16px;

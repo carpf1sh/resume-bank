@@ -6,7 +6,8 @@ lapse. It covers the security track only: a degree or certification that ended
 before the first security role is left off (it stays in its own section).
 
 The same marks are drawn twice, across the page for wide screens and down it for
-phones. Every mark carries its detail line for hover, focus and tap (site.js).
+phones. Every mark carries its detail line for hover and focus (site.js), and links to
+its entry further down the page through `anchor()`, which site.py uses for the entries' ids.
 Only public items reach it, and roles show `public_employer` when one is set.
 """
 
@@ -28,6 +29,11 @@ ROLE, DEGREE, CERT = "role", "degree", "cert"
 CORP_SUFFIX = re.compile(r",?\s+(Corporation|Corp\.?|Incorporated|Inc\.?|LLC|Ltd\.?|Co\.)$", re.I)
 CHAR_W = 6.6  # width of one 11px monospace character, for fitting labels
 LANE_GAP = 0.25  # years between two branches sharing a lane
+
+
+def anchor(kind: str, *parts: str | None) -> str:
+    """The id of a role, degree or cert entry on the page, built only from public text."""
+    return "-".join([kind, re.sub(r"[^a-z0-9]+", "-", " ".join(filter(None, parts)).lower()).strip("-")])
 
 
 def years(ym: str) -> float:
@@ -63,6 +69,7 @@ class Mark:
     detail: str
     dates: str
     start: float
+    anchor: str
     end: float | None = None  # None: still open
     lapsed: bool = False
     lane: int = 0
@@ -81,7 +88,7 @@ def _marks(bank: Bank, month: str) -> tuple[list[Mark], list[Mark], list[Mark]] 
     for r in roles:
         employer = r.public_employer or r.employer
         role_marks.append(Mark(ROLE, short_employer(employer), f"{r.title} · {employer}", fmt_period(r.period),
-                               years(r.period.start), _end(r.period)))
+                               years(r.period.start), anchor(ROLE, employer, r.title), _end(r.period)))
     degrees = []
     for d in bank.education.education:
         if d.visibility != "public" or d.period is None:
@@ -91,7 +98,8 @@ def _marks(bank: Bank, month: str) -> tuple[list[Mark], list[Mark], list[Mark]] 
             continue
         name = f"{d.degree}, {d.field}" if d.field else d.degree
         degrees.append(Mark(DEGREE, short_degree(d.degree), " · ".join(filter(None, [name, d.institution, d.honors])),
-                            fmt_period(d.period), max(years(d.period.start), begin), end))
+                            fmt_period(d.period), max(years(d.period.start), begin),
+                            anchor(DEGREE, d.degree, d.field, d.institution), end))
     certs = []
     for c in bank.certifications.certifications:
         if c.visibility != "public" or not c.earned:
@@ -101,7 +109,7 @@ def _marks(bank: Bank, month: str) -> tuple[list[Mark], list[Mark], list[Mark]] 
             continue
         dates = f"{fmt_month(c.earned)} – {fmt_month(c.expires)}" if lapsed else f"since {fmt_month(c.earned)}"
         certs.append(Mark(CERT, short_cert(c), f"{c.name} · {c.issuer} · {'lapsed' if lapsed else 'active'}", dates,
-                          max(years(c.earned), begin), years(c.expires) if lapsed else None, lapsed))
+                          max(years(c.earned), begin), anchor(CERT, c.name), years(c.expires) if lapsed else None, lapsed))
     return role_marks, degrees, certs
 
 
@@ -133,11 +141,11 @@ def _n(v: float) -> str:
 
 
 def _hit(m: Mark, shape: str, current: bool = False) -> str:
-    """A focusable mark whose detail line site.js shows; <title> is the no-JS tooltip."""
+    """A mark linking to its entry on the page, with a detail line site.js shows; <title> is the no-JS tooltip."""
     label = f"{m.detail}, {m.dates}"
     cls = f"tk-hit tk-{m.kind}" + (" tk-current" if current else "")
-    return (f'<g class="{cls}" tabindex="0" role="img" aria-label="{escape(label)}" data-detail="{escape(m.detail)}" '
-            f'data-dates="{escape(m.dates)}"><title>{escape(label)}</title>{shape}</g>')
+    return (f'<a class="{cls}" href="#{m.anchor}" aria-label="{escape(label)}" data-detail="{escape(m.detail)}" '
+            f'data-dates="{escape(m.dates)}"><title>{escape(label)}</title>{shape}</a>')
 
 
 def _dot(x: float, y: float, cls: str, r: float = 5) -> str:
