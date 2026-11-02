@@ -45,3 +45,16 @@ def test_public_resume_is_a_full_cv():
     security = {r.id for r in bank.roles.values() if r.track == "security"}
     public = [a for a in bank.accomplishments.values() if a.visibility == "public" and a.role_id in security]
     assert sorted(b for r in content.experience for b in r.bullets) == sorted(a.public_text for a in public)
+
+
+def test_sample_capabilities_cover_every_public_item():
+    bank = validate(SAMPLE)
+    caps = site_context(bank, "https://example.test/")["capabilities"]
+    counts = [c["count"] for c in caps]
+    assert counts == sorted(counts, reverse=True)
+    listed = {e["text"] for c in caps for e in c["evidence"]}
+    public = {a.public_text for a in bank.accomplishments.values() if a.visibility == "public"}
+    assert public <= listed
+    contexts = {e["context"] for c in caps for e in c["evidence"]}
+    assert "Security Engineer · A regional bank" in contexts
+    assert not any("Contoso" in x for x in contexts)  # anonymized employer

@@ -317,3 +317,43 @@ def test_bank_overlay_adds_pages(bank: Path):
     page = _build(bank)
     assert 'href="how-it-works.html"' in page
     assert "About" in (bank / "build" / "site" / "how-it-works.html").read_text(encoding="utf-8")
+
+
+def test_capabilities_page_groups_public_items_by_domain(bank: Path):
+    write(bank, "data/roles/acme-architect.yaml", {**ROLE, "public_employer": "A retailer"})
+    write(bank, "data/accomplishments/acme-architect/acme-2022-ai-review.yaml", accomplishment(
+        id="acme-2022-ai-review", visibility="public", public_text="Reviewed every AI feature before launch",
+        domains=["ai-security", "cloud-security"], strength=5, period={"start": "2022-01", "end": "2022-06"},
+    ))
+    index = _build(bank)
+    page = (bank / "build/site/capabilities.html").read_text(encoding="utf-8")
+    assert 'href="capabilities.html"' in index and 'href="./" aria-current="page"' in index
+    # Most-evidenced domain first; a multi-domain item is listed under each domain and links to the others.
+    assert page.index('id="cap-cloud-security"') < page.index('id="cap-ai-security"')
+    assert page.count("Reviewed every AI feature before launch") == 2
+    assert 'class="pill d-ai-security" href="#cap-ai-security"' in page
+    cloud = page[page.index('id="cap-cloud-security"'):page.index('id="cap-ai-security"')]
+    assert cloud.index("Reviewed every AI feature") < cloud.index(PUBLIC_TEXT)  # strongest first
+    assert "Security Architect · A retailer" in page
+    assert "Acme" not in page
+    for absent in ["ransomware", "4,200", "acme-2022-private-incident", "test@example.com"]:
+        assert absent not in page
+    assert 'id="cap-grc"' not in page  # no public evidence
+
+
+def test_leak_guard_covers_capabilities_page(bank: Path, monkeypatch):
+    import resume_mgmt.site as site
+
+    real = site.site_context
+
+    def leaky(bank_, base_url, today=None):
+        ctx = real(bank_, base_url, today)
+        # Only capabilities.html gets the private text.
+        ctx["capabilities"][0]["evidence"][0]["text"] = bank_.accomplishments["acme-2022-private-incident"].resume_bullets[0]
+        return ctx
+
+    monkeypatch.setattr(site, "site_context", leaky)
+    with pytest.raises(SiteLeakError) as exc:
+        _build(bank)
+    assert "acme-2022-private-incident resume_bullets" in exc.value.leaks
+    assert not (bank / "build/site").exists()

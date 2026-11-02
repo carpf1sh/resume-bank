@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ name }} · by capability</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="canonical" href="{{ base_url }}capabilities.html">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="{{ name }} · by capability">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ base_url }}capabilities.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="bar-id" href="./"><b>{{ name | lower | replace(" ", "-") }}</b> / portfolio</a>
+    <nav aria-label="Views">
+      <span class="views"><a href="./">by role</a><a href="capabilities.html" aria-current="page">by capability</a></span>
+      <button class="theme" type="button" aria-label="Toggle dark mode" hidden>◐</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="hero">
+    <h1>{{ name }}</h1>
+    {% if headline %}<p class="headline">{{ headline }}</p>{% endif %}
+  </div>
+
+  {% if capabilities %}
+  {% set top = capabilities[0].count %}
+  <section id="map" aria-labelledby="map-h">
+    <div class="sec-head">
+      <h2 id="map-h">Capabilities</h2>
+      <span class="count">{{ capabilities | length }} domains · {{ public_count }} highlights</span>
+    </div>
+    <ol class="capmap">
+      {% for c in capabilities %}
+      <li class="d-{{ c.slug }}"><a href="#cap-{{ c.slug }}">
+        <span class="cm-label">{{ c.label }}</span>
+        <span class="cm-bar" aria-hidden="true"><i style="--w: {{ (100 * c.count / top) | round(1) }}%"></i></span>
+        <span class="cm-n">{{ c.count }}</span>
+        <time class="cm-span">{{ c.span }}</time>
+      </a></li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  {% for c in capabilities %}
+  <section id="cap-{{ c.slug }}" class="cap d-{{ c.slug }}" aria-labelledby="cap-{{ c.slug }}-h">
+    <div class="sec-head">
+      <h2 id="cap-{{ c.slug }}-h">{{ c.label }}</h2>
+      <span class="count">{{ c.count }} highlight{{ "" if c.count == 1 else "s" }}{% if c.roles %} · {{ c.roles }} role{{ "" if c.roles == 1 else "s" }}{% endif %}{% if c.span %} · {{ c.span }}{% endif %}</span>
+    </div>
+    {% if c.top_skills %}<p class="tags cap-skills">{% for s in c.top_skills %}<span class="tag">{{ s }}</span>{% endfor %}</p>{% endif %}
+    <ul class="evidence">
+      {% for item in c.evidence %}
+      <li>
+        <details class="ev">
+          <summary><span class="ev-text">{{ item.text }}</span>{% if item.year %}<time>{{ item.year }}</time>{% endif %}</summary>
+          <div class="ev-more">
+            <p class="meta"><a href="{{ item.href }}">{{ item.context }}</a>{% if item.dates %} · <time>{{ item.dates }}</time>{% endif %}</p>
+            {% if item.domains or item.skills %}
+            <p class="tags">
+              {% for d in item.domains %}<a class="pill d-{{ d.slug }}" href="#cap-{{ d.slug }}">{{ d.label }}</a>{% endfor %}
+              {% for s in item.skills %}<span class="tag">{{ s.name }}</span>{% endfor %}
+            </p>
+            {% endif %}
+          </div>
+        </details>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+  {% else %}
+  <p class="note">No public highlights yet.</p>
+  {% endif %}
+</main>
+
+<footer class="wrap foot">
+  <p>{{ name }}{% for link in links %} · <a href="{{ link.url }}" rel="me noopener">{{ link.label }}</a>{% endfor %}</p>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>

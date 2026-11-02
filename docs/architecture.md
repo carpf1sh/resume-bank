@@ -30,7 +30,7 @@ Tool upgrades are explicit: tag a release here, then run `uv lock --upgrade-pack
 | `interviews/` | transcripts. Accomplishments cite them in `sources`. |
 | `applications/<date>-<company>-<role>/` | frozen posting, `resume.yaml` (bullets cite accomplishment ids), `status.yaml`, built outputs |
 | `jobs/inbox/` | postings waiting to be tailored ([contract](job-posting-contract.md)) |
-| `site/` | optional extra pages or overrides for the site templates |
+| `site/` | optional extra pages or overrides for the site templates (`index.html` by role, `capabilities.html` by domain) |
 
 ## The loop
 

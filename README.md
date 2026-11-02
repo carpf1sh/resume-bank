@@ -26,7 +26,7 @@ This repo is the tool. Your bank lives in a **separate private repo** that pins 
 uv sync
 uv run rmgr validate --strict --root examples/sample-bank
 uv run rmgr gaps --root examples/sample-bank
-uv run rmgr build site --root examples/sample-bank --no-pdf     # -> examples/sample-bank/build/site/
+uv run rmgr build site --root examples/sample-bank --no-pdf     # -> examples/sample-bank/build/site/ (index.html by role, capabilities.html by domain)
 uv run pytest
 ```
 

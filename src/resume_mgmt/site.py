@@ -106,6 +106,52 @@ def _item(text: str, skills: list[str], domains: list[str], idx: SkillIndex) -> 
     }
 
 
+def _span(periods: list) -> str:
+    """`2016–now`: the years a domain's evidence covers."""
+    starts = [p.start[:4] for p in periods if p]
+    if not starts:
+        return ""
+    ends = [p.end for p in periods if p]
+    end = "now" if any(e in (None, "present") for e in ends) else max(e[:4] for e in ends)
+    return min(starts) if end == min(starts) else f"{min(starts)}–{end}"
+
+
+def capabilities(entries: list[tuple], idx: SkillIndex) -> list[dict]:
+    """The public evidence grouped by domain, for capabilities.html.
+
+    `entries` are `(obj, text, context, href, period)` for public items only. An item with several
+    domains is listed under each, so every section stands on its own; its other domains link across.
+    Domains come most-evidenced first, items strongest then newest first.
+    """
+    sections = []
+    for d in DOMAIN_LABELS:
+        mine = [e for e in entries if d in e[0].domains]
+        if not mine:
+            continue
+        mine.sort(key=lambda e: e[4].start if e[4] else "", reverse=True)
+        mine.sort(key=lambda e: -(getattr(e[0], "strength", None) or 0))
+        tally: dict[str, int] = {}
+        for obj, *_ in mine:
+            for name in {idx.resolve(s) for s in shown_skills(obj)}:
+                tally[name] = tally.get(name, 0) + 1
+        sections.append({
+            "slug": d,
+            "label": DOMAIN_LABELS[d],
+            "count": len(mine),
+            "span": _span([e[4] for e in mine]),
+            "roles": len({e[2] for e in mine if hasattr(e[0], "role_id")}),
+            "top_skills": [n for n, _ in sorted(tally.items(), key=lambda t: (-t[1], t[0].lower()))[:6]],
+            "evidence": [
+                {**_item(text, shown_skills(obj), [x for x in obj.domains if x != d], idx),
+                 "context": context, "href": href, "dates": fmt_period(period),
+                 "year": period.start[:4] if period else ""}
+                for obj, text, context, href, period in mine
+            ],
+        })
+    # Stable sort keeps DOMAIN_LABELS order between domains with equal evidence.
+    return sorted(sections, key=lambda s: -s["count"])
+
+
 def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
     """Everything the templates may see. Nothing private goes in here.
 
@@ -124,6 +170,7 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
     )
 
     timeline = []
+    evidence_entries = []  # (obj, text, context, href, period) for the capabilities page
     for role in sorted(bank.roles.values(), key=lambda r: r.period.start, reverse=True):
         if role.track != "security":
             continue
@@ -132,8 +179,12 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
             key=lambda a: (-(a.strength or 0), a.period.start if a.period else ""),
         )
         employer = role.public_employer or role.employer
+        role_id = anchor(ROLE, employer, role.title)
+        evidence_entries += [
+            (a, a.public_text, f"{role.title} · {employer}", f"./#{role_id}", a.period or role.period) for a in accs
+        ]
         timeline.append({
-            "id": anchor(ROLE, employer, role.title),
+            "id": role_id,
             "title": role.title,
             "employer": employer,
             "dates": fmt_period(role.period),
@@ -172,6 +223,7 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
         {"name": p.name, "url": p.url, "dates": fmt_period(p.period), **_item(p.public_text or p.description, p.skills, p.domains, idx)}
         for p in public_projects
     ]
+    evidence_entries += [(p, p.public_text or p.description, f"Project · {p.name}", "./#projects", p.period) for p in public_projects]
 
     skill_chips = sorted(
         ({"name": n, "slug": slug(n), "count": r["_total"]} for n, r in evidence.items()),
@@ -230,6 +282,7 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
             for d in degrees
         ],
         "projects": projects,
+        "capabilities": capabilities(evidence_entries, idx),
         "public_count": len(public_accs),
         "bank_count": len(bank.accomplishments),  # a count only, for pages that describe the bank
         "resume_pdf": None,  # file name, set by build_site once the PDF is built
