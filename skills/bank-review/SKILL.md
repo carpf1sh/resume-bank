@@ -19,17 +19,24 @@ Load the bank (`uv run rmgr validate` must pass) and list accomplishments that a
 uv run python -c "from pathlib import Path; from resume_mgmt.load import load_bank; b=load_bank(Path('.')); [print(a.strength, a.id, '|', ', '.join(a.domains), '|', a.title) for a in sorted(b.accomplishments.values(), key=lambda a: (-(a.strength or 0), a.id)) if a.visibility != 'public']"
 ```
 
+The public site is a showcase of the whole security career, not a pitch for the roles the owner is pursuing (tailored resumes do the targeting). So `profile.target_domains` plays no part in choosing public items. See how much public evidence each domain and role already has:
+
+```bash
+uv run python -c "from collections import Counter; from pathlib import Path; from resume_mgmt.load import load_bank; b=load_bank(Path('.')); acc=b.accomplishments.values(); pub=Counter(d for a in acc if a.visibility=='public' for d in a.domains); all_=Counter(d for a in acc for d in a.domains); [print(f'{pub[d]:>3} public / {n:>3} total  {d}') for d, n in sorted(all_.items(), key=lambda kv: (pub[kv[0]], -kv[1]))]; print(); [print(sum(a.role_id==r.id and a.visibility=='public' for a in acc), r.id) for r in sorted(b.roles.values(), key=lambda r: r.period.start) if r.track=='security']"
+```
+
 Rank by:
-1. `strength` (5 first).
-2. Fit with the target domains in `profile.target_domains` then other security domains.
-3. Recency.
+1. Breadth: candidates in a domain with no public evidence come first, then domains with only one or two public items.
+2. `strength` (5 first).
+3. Spread across the career: roles with few public items before roles that already have several.
+4. Recency.
 
 Skip:
 - `track: other` roles (pre-security work): the site's timeline doesn't show them.
 - `visibility: private` items: never propose these. Mention them only if the owner asks.
 - Items whose whole story is a confidential incident, vulnerability, or client detail that can't be told without the detail. Say why you skipped them.
 
-Aim for a first set of roughly 8–15 public items that covers each security role on the timeline with at least one or two, weighted to the last three years.
+Aim for every domain the bank has real evidence for to show at least one or two public items, and every security role on the timeline to show at least two. A first review usually lands on roughly 15–30 public items. There's no page cap: the public PDF lists them all.
 
 ### 2. Draft a `public_text` for each candidate
 
@@ -68,7 +75,7 @@ The owner can stop at any point; keep what's approved so far.
 
 Show the current `headline`, `location`, `links`, and `public_summary` in `data/profile.yaml`, and propose updates:
 - `headline` matches the current role's functional title (from `data/roles/`), not an old one.
-- `public_summary`: 2–3 sentences, built only from items that are now public and from the profile's domain summaries. Same sensitivity rules. No contact details, no claims without public evidence, no years-of-experience numbers the roles don't support.
+- `public_summary`: 2–3 sentences, built only from items that are now public and from the profile's domain summaries. It describes the owner's range across domains and roles, not a focus on the roles they're targeting. Same sensitivity rules. No contact details, no claims without public evidence, no years-of-experience numbers the roles don't support.
 - `location` is shown publicly. Ask whether they want the city or something broader ("Denver metro", "Remote, US"). `contact.location` stays on resumes only.
 
 Also confirm each certification, degree (including `honors`), and project is fine to show. They default to `visibility: public`. Set `visibility: resume` on any they want hidden.

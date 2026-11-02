@@ -16,7 +16,7 @@ uv run rmgr validate --strict
 uv run rmgr build site
 ```
 
-`build site` also renders the general PDF resume (`<Name>-Resume.pdf`, linked from the hero) from the same public set: public location and links instead of contact details, and `public_text` instead of resume bullets. It needs LibreOffice. `--no-pdf` skips the PDF for a quick local preview, but never publish that way.
+`build site` also renders the general PDF resume (`<Name>-Resume.pdf`, linked from the hero) from the same public set: public location and links instead of contact details, and `public_text` instead of resume bullets. It's a full CV, with every public item and no page cap. The 2-page limit applies only to tailored resumes. It needs LibreOffice. `--no-pdf` skips the PDF for a quick local preview, but never publish that way.
 
 `build site` fails, and deletes the output, if any of these appear in it: a non-public id, a resume bullet, STAR text, a role summary, a contact detail, or an anonymized employer name. Never work around a leak-guard failure. Fix the data (or the template that leaked it) and rebuild.
 
@@ -28,7 +28,7 @@ Serve `build/site/` and open it:
 
 Check each of these, and tell the owner what you saw:
 - The hero shows the name, headline, public summary, links, and the "Resume (PDF)" link. It has no email, phone, or private location.
-- The PDF reads well and has no email, phone, or private location. (The leak guard scans its text too.)
+- The PDF reads well, lists every public highlight under its role (however many pages that takes), and has no email, phone, or private location. (The leak guard scans its text too.)
 - Each public highlight on the timeline sits under the right role. The domain and skill chips filter it, and clicking an active chip clears it.
 - The career track above the experience list shows each security role, every public degree and certification that overlaps the security career, and lapsed certs ending in an x. Hovering or tapping a mark shows its detail line, and at phone width the track turns vertical. If a short label reads badly, set `short_name` on the cert.
 - The skills matrix, certifications, projects, education, and any overlay pages from `site/` look right.

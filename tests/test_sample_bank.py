@@ -6,6 +6,8 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from resume_mgmt.cli import app
+from resume_mgmt.site import public_resume_content, site_context
+from resume_mgmt.validate import validate
 
 SAMPLE = Path(__file__).resolve().parents[1] / "examples" / "sample-bank"
 APP = "applications/2026-01-15-fabrikam-cloud-security-architect"
@@ -34,3 +36,12 @@ def test_sample_bank_builds(tmp_path: Path):
     assert (bank / "build" / "site" / "how-it-works.html").is_file()  # site/ overlay
     assert 'class="tk tk-wide"' in page  # career track
     assert "GIAC Certified Incident Handler (GCIH) · GIAC · lapsed" in page
+
+
+def test_public_resume_is_a_full_cv():
+    """The public PDF lists every public highlight: no page cap, unlike tailored resumes."""
+    bank = validate(SAMPLE)
+    content = public_resume_content(bank, site_context(bank, "https://example.test/"))
+    security = {r.id for r in bank.roles.values() if r.track == "security"}
+    public = [a for a in bank.accomplishments.values() if a.visibility == "public" and a.role_id in security]
+    assert sorted(b for r in content.experience for b in r.bullets) == sorted(a.public_text for a in public)

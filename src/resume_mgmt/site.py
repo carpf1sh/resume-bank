@@ -244,7 +244,7 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
 def public_resume_content(bank: Bank, ctx: dict) -> ResumeContent:
     """The general resume, built only from the public site context.
 
-    The contact line is the public location and profile links, never
+    It's a full CV: every public highlight, no page cap (unlike tailored resumes). The contact line is the public location and profile links, never
     `profile.contact`. Experience bullets are `public_text`, never `resume_bullets`. Lapsed
     certifications are left out: a resume lists credentials as current.
     """
