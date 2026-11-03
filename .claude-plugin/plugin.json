@@ -1,7 +1,7 @@
 {
   "name": "resume-bank",
   "description": "Skills for an evidence-backed career bank: ingest past resumes, interview for accomplishments, tailor ATS-safe resumes, review and publish a public portfolio.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": { "name": "carpf1sh" },
   "repository": "https://github.com/carpf1sh/resume-bank"
 }
