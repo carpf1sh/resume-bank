@@ -268,16 +268,14 @@ h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; 
   padding: 4px 6px; background: var(--surface); white-space: nowrap;
 }
 .tag { font: 0.7rem/1 var(--f-mono); color: var(--muted); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; }
-.timeline .tag.hit { color: var(--accent); background: var(--accent-wash); border-color: var(--accent); }
-/* Quiet tags: on the role list each item shows only its domain pills until it is hovered, focused or
-   tapped, or a filter is active. The skill tags stay in the DOM (and the accessibility tree) so the
-   filter still matches them. Without JavaScript, and in print, every tag shows. */
-@media screen {
-  .js .timeline:not(.filtering) .item:not(:hover, :focus-within, .tags-open) .tag {
-    position: absolute; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-  }
-  .js .timeline:not(.filtering) .item:not(:hover, :focus-within, .tags-open) .tags:not(:has(.pill)) { margin-top: -8px; }
-}
+/* Quiet tags: on the role list skill tags are plain muted text beside the domain pills, so the pills
+   carry the color. They brighten on hover and the one matching the active filter is marked; nothing
+   moves or reflows. */
+.item .tag { background: none; border: 0; padding: 4px 0; color: var(--muted); opacity: 0.7; }
+.item .pill + .tag { margin-left: 3px; }
+.item .tag:not(:last-child)::after { content: "·"; margin-left: 5px; }
+.item:hover .tag, .item:focus-within .tag { opacity: 1; }
+.item .tag.hit { color: var(--accent); opacity: 1; font-weight: 500; }
 .filtered-out { display: none !important; }
 .empty-state { padding: 16px; color: var(--muted); font: 0.85rem var(--f-mono); }
 
