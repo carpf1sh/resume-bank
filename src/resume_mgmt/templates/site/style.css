@@ -348,6 +348,7 @@ a.pill:hover { background: var(--bg); }
 .explainer main section > p, .explainer main li, .explainer main dd { max-width: 72ch; }
 .explainer main section > p + p { margin-top: 12px; }
 .explainer section > h2 { margin-bottom: 14px; }
+.explainer main section > p + :is(.layers, .cards) { margin-top: 16px; }
 code { font-family: var(--f-mono); font-size: 0.86em; background: var(--accent-wash); color: var(--text); border-radius: 4px; padding: 1px 5px; }
 .stats { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 0; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
