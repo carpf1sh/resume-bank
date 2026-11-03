@@ -328,6 +328,7 @@ def test_capabilities_page_groups_public_items_by_domain(bank: Path):
     index = _build(bank)
     page = (bank / "build/site/capabilities.html").read_text(encoding="utf-8")
     assert 'href="capabilities.html"' in index and 'href="./" aria-current="page"' in index
+    assert '<a href="./#experience">experience</a>' in page  # same header bar as the role view
     # Most-evidenced domain first; a multi-domain item is listed under each domain and links to the others.
     assert page.index('id="cap-cloud-security"') < page.index('id="cap-ai-security"')
     assert page.count("Reviewed every AI feature before launch") == 2
