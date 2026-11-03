@@ -52,6 +52,10 @@ DOMAIN_LABELS = {
 # Free text shorter than this is too generic to scan for (it could match ordinary page words).
 MIN_SCAN_LEN = 24
 
+# Highlights a role shows before "show N more" on the by-role page (bank order is priority order).
+# A role with at most one more than this stays open: a toggle that hides one item isn't worth it.
+ROLE_PREVIEW = 4
+
 
 class SiteLeakError(Exception):
     def __init__(self, leaks: list[str]):
@@ -265,6 +269,7 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
         "links": [{"label": link.label, "url": link.url} for link in profile.links],
         "base_url": base_url,
         "timeline": timeline,
+        "role_preview": ROLE_PREVIEW,
         "track": career_track(bank, today),
         "month": month,
         "domain_chips": domain_chips,

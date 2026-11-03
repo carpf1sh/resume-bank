@@ -358,3 +358,22 @@ def test_leak_guard_covers_capabilities_page(bank: Path, monkeypatch):
         _build(bank)
     assert "acme-2022-private-incident resume_bullets" in exc.value.leaks
     assert not (bank / "build/site").exists()
+
+
+def _public(bank: Path, n: int) -> None:
+    for i in range(n):
+        write(bank, f"data/accomplishments/acme-architect/extra-{i}.yaml", accomplishment(
+            id=f"extra-{i}", visibility="public", public_text=f"Extra public highlight number {i}",
+        ))
+
+
+@pytest.mark.parametrize("public, toggle", [(5, None), (6, "show 2 more"), (9, "show 5 more")])
+def test_long_roles_fold_behind_a_toggle(bank: Path, public: int, toggle: str | None):
+    _public(bank, public - 1)  # the fixture already has one public item
+    page = _build(bank)
+    assert page.count('class="item"') == public  # every item is in the page for no-JS and print
+    if toggle is None:  # one hidden item isn't worth a toggle
+        assert "role-more" not in page and "data-preview" not in page
+    else:
+        assert 'data-preview="4"' in page
+        assert f'aria-expanded="false" data-more="{toggle}">{toggle}</button>' in page

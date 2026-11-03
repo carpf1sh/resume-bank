@@ -94,7 +94,8 @@
           <time>{{ role.dates }}</time>
         </div>
         {% if role.highlights %}
-        <ul class="items">
+        {% set more = role.highlights | length - role_preview %}
+        <ul class="items" id="{{ role.id }}-items"{% if more > 1 %} data-preview="{{ role_preview }}"{% endif %}>
           {% for item in role.highlights %}
           <li class="item" data-domains="{{ item.filter_domains }}" data-skills="{{ item.filter_skills }}">
             <p>{{ item.text }}</p>
@@ -107,6 +108,7 @@
           </li>
           {% endfor %}
         </ul>
+        {% if more > 1 %}<button type="button" class="role-more" aria-controls="{{ role.id }}-items" aria-expanded="false" data-more="show {{ more }} more">show {{ more }} more</button>{% endif %}
         {% endif %}
       </li>
       {% endfor %}
