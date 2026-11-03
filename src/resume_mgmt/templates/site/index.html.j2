@@ -26,7 +26,7 @@
     <nav aria-label="Sections">
       {% if capabilities %}<span class="views"><a href="./" aria-current="page">by role</a><a href="capabilities.html">by highlight</a></span>{% endif %}
       <a href="#experience">experience</a>
-      {% if matrix %}<a href="#skills">skills</a>{% endif %}
+      {% if skill_map %}<a href="#skills">skills</a>{% endif %}
       {% if certifications %}<a href="#certifications">certifications</a>{% endif %}
       {% if projects %}<a href="#projects">projects</a>{% endif %}
       {% if education %}<a href="#education">education</a>{% endif %}
@@ -116,28 +116,39 @@
     </ol>
   </section>
 
-  {% if matrix %}
+  {% if skill_map %}
+  {% macro layer_box(b) %}
+  <div class="am-box" style="--c: var(--d-{{ b.domain }})">
+    <h3 class="am-label">{{ b.label }}</h3>
+    <ul class="am-chips">
+      {% for s in b.skills %}<li><button type="button" class="am-chip" data-kind="skill" data-value="{{ s.slug }}" data-proof="{{ s.proof }}" data-context="{{ s.context }}" aria-pressed="false">{{ s.name }}</button></li>{% endfor %}
+    </ul>
+  </div>
+  {% endmacro %}
+  {% set m = skill_map %}
+  {% set cols = [] %}
+  {% if m.left %}{% set _ = cols.append("minmax(170px, 1fr)") %}{% endif %}
+  {% if m.workloads %}{% set _ = cols.append("3fr") %}{% endif %}
+  {% if m.right %}{% set _ = cols.append("minmax(170px, 1fr)") %}{% endif %}
   <section id="skills" aria-labelledby="skills-h">
-    <div class="sec-head"><h2 id="skills-h">Skills</h2></div>
-    <p class="note">Each number counts the highlights above (and projects) that show the skill in that domain.</p>
-    <div class="matrix-scroll">
-      <table class="matrix">
-        <thead>
-          <tr><th scope="col">Skill</th>{% for d in matrix_domains %}<th scope="col" class="d-{{ d.slug }}">{{ d.label }}</th>{% endfor %}</tr>
-        </thead>
-        {% for group in matrix %}
-        <tbody>
-          <tr class="cat"><th scope="rowgroup" colspan="{{ matrix_domains | length + 1 }}">{{ group.category }}</th></tr>
-          {% for s in group.skills %}
-          <tr>
-            <th scope="row">{{ s.name }}</th>
-            {% for n in s.cells %}<td{% if n %} class="hit" style="--n: {{ n }}"{% endif %}>{{ n or "" }}</td>{% endfor %}
-          </tr>
-          {% endfor %}
-        </tbody>
-        {% endfor %}
-      </table>
+    <div class="sec-head">
+      <h2 id="skills-h">Skills</h2>
+      <span class="count">{{ m.count }} skills</span>
     </div>
+    <p class="note">Where my skills sit in a security architecture. Hover or focus one to see where I used it; select it to filter the highlights above.</p>
+    <div class="am" style="--am-cols: {{ cols | join(' ') or '1fr' }}">
+      {% if m.top %}<div class="am-top">{{ layer_box(m.top) }}</div>{% endif %}
+      {% if m.left %}{{ layer_box(m.left) }}{% endif %}
+      {% if m.workloads %}
+      <div class="am-stack">
+        <span class="am-boundary">workloads</span>
+        {% for b in m.workloads %}{{ layer_box(b) }}{% endfor %}
+      </div>
+      {% endif %}
+      {% if m.right %}{{ layer_box(m.right) }}{% endif %}
+      {% for b in m.bottom %}<div class="am-bottom">{{ layer_box(b) }}</div>{% endfor %}
+    </div>
+    <p class="am-proof" aria-live="polite" hidden></p>
   </section>
   {% endif %}
 

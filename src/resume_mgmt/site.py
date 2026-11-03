@@ -49,6 +49,21 @@ DOMAIN_LABELS = {
     "leadership": "Leadership",
 }
 
+# The skills map draws the skills section as a security reference architecture: governance across
+# the top, identity and detection down the sides, workload layers in between, practice along the bottom.
+LAYERS = {
+    "governance": ("Governance · Risk · Compliance", "grc"),
+    "identity": ("Identity & Access", "iam"),
+    "ai": ("AI", "ai-security"),
+    "applications": ("Applications & SaaS", "appsec"),
+    "cloud": ("Cloud & Infrastructure", "cloud-security"),
+    "data": ("Data & Network", "data-security"),
+    "detection": ("Detection & Response", "detection-response"),
+    "automation": ("Automation & Analytics", "other"),
+    "leadership": ("Leadership & Delivery", "leadership"),
+    "other": ("Other", "other"),  # skills whose category and entry set no layer
+}
+
 # Free text shorter than this is too generic to scan for (it could match ordinary page words).
 MIN_SCAN_LEN = 24
 
@@ -73,6 +88,8 @@ class SkillIndex:
 
     canonical: dict[str, str] = field(default_factory=dict)
     category: dict[str, str] = field(default_factory=dict)
+    layer: dict[str, str] = field(default_factory=dict)  # skills map layer, when skills.yaml sets one
+    rank: dict[str, int] = field(default_factory=dict)  # position in skills.yaml
     order: list[str] = field(default_factory=list)  # category order from skills.yaml
 
     @classmethod
@@ -84,6 +101,9 @@ class SkillIndex:
                 for name in [skill.name, *skill.aliases]:
                     idx.canonical[name.lower()] = skill.name
                 idx.category[skill.name] = cat.name
+                idx.rank[skill.name] = len(idx.rank)
+                if skill.layer or cat.layer:
+                    idx.layer[skill.name] = skill.layer or cat.layer
         return idx
 
     def resolve(self, name: str) -> str:
@@ -156,6 +176,38 @@ def capabilities(entries: list[tuple], idx: SkillIndex) -> list[dict]:
     return sorted(sections, key=lambda s: -s["count"])
 
 
+def skill_map(evidence_entries: list[tuple], idx: SkillIndex) -> dict | None:
+    """Skills that public evidence demonstrates, placed on architecture layers.
+
+    No counts or ranking: a skill is on the map or it isn't. Each skill carries one proof line, the
+    first public highlight on the page that shows it (newest role, strongest item first).
+    """
+    proof: dict[str, dict] = {}
+    for obj, text, context, href, _period in evidence_entries:
+        for name in {idx.resolve(s) for s in shown_skills(obj)}:
+            proof.setdefault(name, {"proof": text, "context": context, "href": href})
+    if not proof:
+        return None
+    boxes: dict[str, list[dict]] = {}
+    for name in sorted(proof, key=lambda n: (idx.rank.get(n, len(idx.rank)), n.lower())):
+        boxes.setdefault(idx.layer.get(name, "other"), []).append({"name": name, "slug": slug(name), **proof[name]})
+
+    def box(layer: str) -> dict | None:
+        if layer not in boxes:
+            return None
+        label, domain = LAYERS[layer]
+        return {"id": layer, "label": label, "domain": domain, "skills": boxes[layer]}
+
+    return {
+        "top": box("governance"),
+        "left": box("identity"),
+        "right": box("detection"),
+        "workloads": [b for b in map(box, ("ai", "applications", "cloud", "data")) if b],
+        "bottom": [b for b in map(box, ("automation", "leadership", "other")) if b],
+        "count": len(proof),
+    }
+
+
 def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
     """Everything the templates may see. Nothing private goes in here.
 
@@ -196,24 +248,17 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
             "highlights": [_item(a.public_text, shown_skills(a), a.domains, idx) for a in accs],
         })
 
-    # Skills matrix: only skills that public evidence demonstrates.
+    # Skill groups (for the PDF resume) and filter chips: only skills that public evidence demonstrates.
     domains_seen = sorted({d for a in public_accs for d in a.domains} | {d for p in public_projects for d in p.domains},
                           key=lambda d: list(DOMAIN_LABELS).index(d))
-    evidence: dict[str, dict[str, int]] = {}
+    evidence: dict[str, int] = {}
     for obj in [*public_accs, *public_projects]:
         for name in {idx.resolve(s) for s in shown_skills(obj)}:
-            row = evidence.setdefault(name, {})
-            row["_total"] = row.get("_total", 0) + 1
-            for d in obj.domains:
-                row[d] = row.get(d, 0) + 1
+            evidence[name] = evidence.get(name, 0) + 1
     by_cat: dict[str, list[dict]] = {}
-    for name, row in evidence.items():
-        cat = idx.category.get(name, "Other")
-        by_cat.setdefault(cat, []).append({
-            "name": name, "slug": slug(name), "total": row["_total"],
-            "cells": [row.get(d, 0) for d in domains_seen],
-        })
-    matrix = [
+    for name, total in evidence.items():
+        by_cat.setdefault(idx.category.get(name, "Other"), []).append({"name": name, "total": total})
+    skill_groups = [
         {"category": cat, "skills": sorted(by_cat[cat], key=lambda s: (-s["total"], s["name"].lower()))}
         for cat in [*idx.order, "Other"] if cat in by_cat
     ]
@@ -230,7 +275,7 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
     evidence_entries += [(p, p.public_text or p.description, f"Project · {p.name}", "./#projects", p.period) for p in public_projects]
 
     skill_chips = sorted(
-        ({"name": n, "slug": slug(n), "count": r["_total"]} for n, r in evidence.items()),
+        ({"name": n, "slug": slug(n), "count": c} for n, c in evidence.items()),
         key=lambda s: (-s["count"], s["name"].lower()),
     )
     domain_chips = [
@@ -274,8 +319,8 @@ def site_context(bank: Bank, base_url: str, today: date | None = None) -> dict:
         "month": month,
         "domain_chips": domain_chips,
         "skill_chips": skill_chips,
-        "matrix_domains": [{"slug": d, "label": DOMAIN_LABELS[d]} for d in domains_seen],
-        "matrix": matrix,
+        "skill_groups": skill_groups,
+        "skill_map": skill_map(evidence_entries, idx),
         "certifications": [
             {"id": anchor(CERT, c.name), "name": c.name, "issuer": c.issuer, "earned": fmt_month(c.earned) if c.earned else None, "verify_url": c.verify_url,
              "lapsed": fmt_month(c.expires) if c.lapsed(month) else None}
@@ -320,7 +365,7 @@ def public_resume_content(bank: Bank, ctx: dict) -> ResumeContent:
                       bullets=[h["text"] for h in r["highlights"]])
             for r in ctx["timeline"]
         ],
-        skills=[SkillGroup(g["category"], [s["name"] for s in g["skills"]]) for g in ctx["matrix"]],
+        skills=[SkillGroup(g["category"], [s["name"] for s in g["skills"]]) for g in ctx["skill_groups"]],
         certifications=[cert_line(c) for c in certs],
         education=[degree_line(d) for d in bank.education.education if d.visibility == "public"],
         projects=[f"{p['name']}: {p['text']}" for p in ctx["projects"]],

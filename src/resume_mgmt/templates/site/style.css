@@ -24,7 +24,6 @@
   --line: #e3e5ec;
   --accent: #5b3fd6;
   --accent-wash: #efebfd;
-  --hit: 91 63 214;
   /* domain colors (AA on --surface) */
   --d-security-architecture: #5b3fd6;
   --d-cloud-security: #0b7285;
@@ -54,7 +53,6 @@
     --line: #232938;
     --accent: #b3a4ff;
     --accent-wash: #211c3d;
-    --hit: 179 164 255;
     --d-security-architecture: #b3a4ff;
     --d-cloud-security: #5fd0e0;
     --d-ai-security: #f39bc8;
@@ -80,7 +78,6 @@
   --line: #232938;
   --accent: #b3a4ff;
   --accent-wash: #211c3d;
-  --hit: 179 164 255;
   --d-security-architecture: #b3a4ff;
   --d-cloud-security: #5fd0e0;
   --d-ai-security: #f39bc8;
@@ -297,16 +294,32 @@ h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; 
 .filtered-out { display: none !important; }
 .empty-state { padding: 16px; color: var(--muted); font: 0.85rem var(--f-mono); }
 
-/* --- skills matrix --- */
-.matrix-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-.matrix { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
-.matrix th, .matrix td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: center; }
-.matrix tbody:last-child tr:last-child > * { border-bottom: 0; }
-.matrix th[scope="row"], .matrix thead th:first-child { text-align: left; font-weight: 400; white-space: nowrap; }
-.matrix thead th { font: 500 0.68rem/1.3 var(--f-mono); color: var(--c, var(--muted)); vertical-align: bottom; text-transform: lowercase; background: var(--bg); padding-top: 10px; }
-.matrix .cat th { text-align: left; font: 500 0.7rem var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; padding-top: 16px; color: var(--muted); }
-.matrix td { font: 0.82rem var(--f-mono); font-variant-numeric: tabular-nums; }
-.matrix td.hit { background: rgb(var(--hit) / calc(0.08 + 0.12 * var(--n))); color: var(--text); font-weight: 500; }
+/* --- skills map: the skills section drawn as a security reference architecture --- */
+.am { display: grid; gap: 10px; grid-template-columns: var(--am-cols, 1fr); align-items: stretch; }
+.am-top, .am-bottom { grid-column: 1 / -1; }
+.am-box { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
+.am-label { margin: 0 0 8px; font: 500 0.66rem/1.2 var(--f-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.am-chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
+/* Side columns (identity, detection) read top to bottom, like the cross-cutting layers of a reference diagram. */
+.am > .am-box .am-chips { flex-direction: column; align-items: flex-start; }
+.am-chip {
+  font: 0.76rem/1.4 var(--f-mono); color: var(--text); text-align: left; cursor: pointer;
+  padding: 2px 8px; border-radius: 5px; border: 1px solid color-mix(in srgb, var(--c) 40%, var(--line));
+  background: color-mix(in srgb, var(--c) 9%, transparent);
+}
+.am-chip:hover, .am-chip:focus-visible, .am-chip.shown { border-color: var(--c); background: color-mix(in srgb, var(--c) 22%, transparent); }
+.am-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.am-chip[aria-pressed="true"] { border-color: var(--c); background: var(--c); color: var(--surface); }
+.am-stack { position: relative; display: grid; gap: 10px; align-content: start; padding: 18px 10px 10px; min-width: 0;
+  border: 1px dashed color-mix(in srgb, var(--muted) 55%, transparent); border-radius: 10px; }
+.am-boundary { position: absolute; top: -0.6em; left: 12px; padding: 0 6px; background: var(--bg); font: 0.64rem var(--f-mono); letter-spacing: 0.06em; color: var(--muted); }
+.am-proof { margin: 14px 0 0; padding: 10px 12px; border-left: 2px solid var(--line); font-size: 0.86rem; color: var(--muted); }
+.am-proof b { font: 500 0.8rem var(--f-mono); color: var(--text); }
+.am-proof cite { display: block; margin-top: 4px; font: normal 0.72rem var(--f-mono); }
+@media (max-width: 640px) {
+  .am { grid-template-columns: 1fr; }
+  .am > .am-box .am-chips { flex-direction: row; }
+}
 
 /* --- cards (certs, projects, education) --- */
 .cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

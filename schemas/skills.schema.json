@@ -13,6 +13,30 @@
           },
           "title": "Aliases",
           "type": "array"
+        },
+        "layer": {
+          "anyOf": [
+            {
+              "enum": [
+                "governance",
+                "identity",
+                "ai",
+                "applications",
+                "cloud",
+                "data",
+                "detection",
+                "automation",
+                "leadership"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Layer on the site's skills map; overrides the category's layer",
+          "title": "Layer"
         }
       },
       "required": [
@@ -27,6 +51,30 @@
         "name": {
           "title": "Name",
           "type": "string"
+        },
+        "layer": {
+          "anyOf": [
+            {
+              "enum": [
+                "governance",
+                "identity",
+                "ai",
+                "applications",
+                "cloud",
+                "data",
+                "detection",
+                "automation",
+                "leadership"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Layer on the site's skills map for this category's skills",
+          "title": "Layer"
         },
         "skills": {
           "items": {

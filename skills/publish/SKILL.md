@@ -31,7 +31,7 @@ Check each of these, and tell the owner what you saw:
 - The PDF reads well, lists every public highlight under its role (however many pages that takes), and has no email, phone, or private location. (The leak guard scans its text too.)
 - Each public highlight on the timeline sits under the right role. The domain and skill chips filter it, and clicking an active chip clears it.
 - The career track above the experience list shows each security role, every public degree and certification that overlaps the security career, and lapsed certs ending in an x. Hovering or tapping a mark shows its detail line, and at phone width the track turns vertical. If a short label reads badly, set `short_name` on the cert.
-- The skills matrix, certifications, projects, education, and any overlay pages from `site/` look right.
+- The skills map (every skill in a sensible layer, nothing stuck under "Other"), certifications, projects, education, and any overlay pages from `site/` look right.
 - Light mode, dark mode, and a phone-width viewport (375px) all work.
 
 ## 3. Show what changes

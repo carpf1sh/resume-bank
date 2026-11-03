@@ -37,7 +37,7 @@ Follow CLAUDE.md throughout. **The owner's answers are the only new evidence.** 
 - **New accomplishment:** write `data/accomplishments/<role-id>/<id>.yaml`, following CLAUDE.md conventions. `sources` includes the transcript path.
 - **Existing accomplishment:** edit in place. Add the transcript to `sources`, fill in the STAR/metrics, add or refresh up to 3 `resume_bullets`, and set `last_reviewed: <today>` for anything the owner confirmed.
 - **Resolved conflict:** update the value everywhere it appears (roles, certifications, metrics) and note the decision in the transcript.
-- **New skill or framework:** add it to `data/skills.yaml`.
+- **New skill or framework:** add it to `data/skills.yaml`, in a category whose `layer` fits (or give the skill its own `layer`) so it lands in the right place on the site's skills map.
 - Run `uv run rmgr validate --strict` and fix any problems before the next question.
 - Show the owner the new or changed bullets (not the full YAML) and ask "Anything to correct?" before moving on.
 

@@ -1,5 +1,5 @@
-// Experience filter (domain tiles, skill chips, free-text query), folding of long roles, the career
-// track's detail line, and the light/dark toggle. Without JavaScript every item stays visible, the filter controls stay
+// Experience filter (domain tiles, skill chips, the skills map, free-text query), folding of long roles,
+// the skills map's proof line, the career track's detail line, and the light/dark toggle. Without JavaScript every item stays visible, the filter controls stay
 // hidden, and the track's marks fall back to their <title> tooltips.
 (function () {
   "use strict";
@@ -174,8 +174,32 @@
     // Clicking the active control again clears that filter.
     active[kind] = active[kind] === value ? "" : value;
     apply();
-    if (kind === "domain") document.getElementById("experience").scrollIntoView({ block: "start" });
+    if (kind === "domain" || control.closest(".am")) document.getElementById("experience").scrollIntoView({ block: "start" });
   });
+
+  // Skills map: hovering or focusing a skill shows the first highlight that demonstrates it.
+  var proof = document.querySelector(".am-proof");
+  var shownChip = null;
+  function showProof(chip) {
+    if (shownChip) shownChip.classList.remove("shown");
+    shownChip = chip;
+    chip.classList.add("shown");
+    var name = document.createElement("b");
+    name.textContent = chip.textContent + " → ";
+    var cite = document.createElement("cite");
+    cite.textContent = chip.getAttribute("data-context");
+    proof.textContent = "";
+    proof.appendChild(name);
+    proof.appendChild(document.createTextNode(chip.getAttribute("data-proof")));
+    proof.appendChild(cite);
+    proof.hidden = false;
+  }
+  if (proof) {
+    Array.prototype.slice.call(document.querySelectorAll(".am-chip")).forEach(function (chip) {
+      chip.addEventListener("mouseenter", function () { showProof(chip); });
+      chip.addEventListener("focus", function () { showProof(chip); });
+    });
+  }
 
   if (input) {
     input.addEventListener("input", function () {

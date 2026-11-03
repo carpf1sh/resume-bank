@@ -22,7 +22,7 @@ Tool upgrades are explicit: tag a release here, then run `uv lock --upgrade-pack
 | Path | Holds |
 |---|---|
 | `data/profile.yaml` | name, private contact, public links, `site_url`, summaries per target domain |
-| `data/skills.yaml` | skill vocabulary and aliases (used to match postings and tags) |
+| `data/skills.yaml` | skill vocabulary and aliases (used to match postings and tags); optional `layer` per category or skill places it on the site's skills map |
 | `data/roles/<role-id>.yaml` | one job: employer (optionally `public_employer`), title, dates |
 | `data/accomplishments/<role-id>/<id>.yaml` | one accomplishment: STAR story, metrics (`verified`), 1–3 resume bullets, `visibility`, `public_text`, `strength`, `sources` |
 | `data/certifications.yaml`, `data/education.yaml`, `data/projects/` | lists |
