@@ -59,6 +59,7 @@
   var input = filters && filters.querySelector("#q");
   var controls = Array.prototype.slice.call(document.querySelectorAll("[data-kind]"));
   var haystack = items.map(function (item) { return item.textContent.toLowerCase(); });
+  var tags = Array.prototype.slice.call(timeline.querySelectorAll(".item .tag"));
 
   function matches(item, i) {
     var domains = (item.getAttribute("data-domains") || "").split(" ");
@@ -88,6 +89,13 @@
       role.classList.toggle("filtered-out", Boolean(filtering) && visible === 0);
     });
     if (empty) empty.hidden = !filtering || shown > 0;
+    // While filtering, every visible item shows its skill tags, with the matching ones marked.
+    timeline.classList.toggle("filtering", Boolean(filtering));
+    tags.forEach(function (tag) {
+      var hit = (active.skill && tag.getAttribute("data-skill") === active.skill) ||
+                (active.text && tag.textContent.toLowerCase().indexOf(active.text) !== -1);
+      tag.classList.toggle("hit", Boolean(hit));
+    });
     controls.forEach(function (c) {
       c.setAttribute("aria-pressed", String(c.getAttribute("data-value") === active[c.getAttribute("data-kind")]));
     });
@@ -129,6 +137,15 @@
     apply();
     if (kind === "domain") document.getElementById("experience").scrollIntoView({ block: "start" });
   });
+
+  // Touch screens have no hover: a tap on an item shows or hides its skill tags.
+  if (window.matchMedia("(hover: none)").matches) {
+    timeline.addEventListener("click", function (ev) {
+      var item = ev.target.closest(".item");
+      if (!item || ev.target.closest("a, button") || String(window.getSelection())) return;
+      item.classList.toggle("tags-open");
+    });
+  }
 
   if (input) {
     input.addEventListener("input", function () {

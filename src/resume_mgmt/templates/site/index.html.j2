@@ -101,7 +101,7 @@
             {% if item.domains or item.skills %}
             <p class="tags">
               {% for d in item.domains %}<span class="pill d-{{ d.slug }}">{{ d.label }}</span>{% endfor %}
-              {% for s in item.skills %}<span class="tag">{{ s.name }}</span>{% endfor %}
+              {% for s in item.skills %}<span class="tag" data-skill="{{ s.slug }}">{{ s.name }}</span>{% endfor %}
             </p>
             {% endif %}
           </li>
