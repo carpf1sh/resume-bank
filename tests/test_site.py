@@ -360,6 +360,49 @@ def test_leak_guard_covers_capabilities_page(bank: Path, monkeypatch):
     assert not (bank / "build/site").exists()
 
 
+def _layer_boxes(page: str) -> dict[str, str]:
+    """Skills map boxes by label, each box's HTML."""
+    section = page[page.index('<section id="skills"'):]
+    section = section[:section.index("</section>")]
+    boxes = section.split('class="am-box"')[1:]
+    return {re.search(r'<h3 class="am-label">([^<]+)</h3>', b).group(1): b for b in boxes}
+
+
+def test_skills_map_places_skills_on_layers(bank: Path):
+    write(bank, "data/skills.yaml", {"categories": [
+        {"name": "Cloud Security", "layer": "cloud", "skills": [
+            {"name": "CSPM", "aliases": ["cloud security posture management"]},
+            {"name": "Zero Trust", "layer": "identity"},  # a skill's layer overrides its category's
+        ]},
+        {"name": "Tools", "skills": [{"name": "Jira"}]},  # no layer anywhere
+    ]})
+    write(bank, "data/accomplishments/acme-architect/acme-2022-zero-trust.yaml", accomplishment(
+        id="acme-2022-zero-trust", visibility="public", public_text="Moved every contractor onto zero trust access",
+        skills=["Zero Trust", "Jira"], strength=5,
+    ))
+    page = _build(bank)
+    boxes = _layer_boxes(page)
+    assert list(boxes) == ["Identity &amp; Access", "Cloud &amp; Infrastructure", "Other"]  # empty layers aren't drawn
+    assert ">CSPM</button>" in boxes["Cloud &amp; Infrastructure"]
+    assert ">Zero Trust</button>" in boxes["Identity &amp; Access"]
+    assert ">Jira</button>" in boxes["Other"]
+    # Each chip drives the skill filter and carries its proof line; no counts anywhere in the map.
+    assert (f'data-kind="skill" data-value="cspm" data-proof="{PUBLIC_TEXT}" '
+            'data-context="Security Architect · Acme"') in page
+    assert 'data-value="jira" data-proof="Moved every contractor onto zero trust access"' in page
+    assert '<span class="count">3 skills</span>' in page
+    assert "matrix" not in page
+    assert '<a href="#skills">skills</a>' in page
+
+
+def test_skills_map_without_public_skills(bank: Path):
+    write(bank, "data/accomplishments/acme-architect/cspm-rollout.yaml", accomplishment(
+        visibility="public", public_text=PUBLIC_TEXT, skills=[],
+    ))
+    page = _build(bank)
+    assert 'id="skills"' not in page and 'href="#skills"' not in page
+
+
 def _public(bank: Path, n: int) -> None:
     for i in range(n):
         write(bank, f"data/accomplishments/acme-architect/extra-{i}.yaml", accomplishment(

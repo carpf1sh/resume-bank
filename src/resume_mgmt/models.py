@@ -91,13 +91,29 @@ class Profile(Strict):
 # --- skills.yaml ------------------------------------------------------------
 
 
+# Where a skill sits on the public site's skills map, drawn as a security reference architecture.
+Layer = Literal[
+    "governance",
+    "identity",
+    "ai",
+    "applications",
+    "cloud",
+    "data",
+    "detection",
+    "automation",
+    "leadership",
+]
+
+
 class Skill(Strict):
     name: str
     aliases: list[str] = Field(default_factory=list)
+    layer: Layer | None = Field(None, description="Layer on the site's skills map; overrides the category's layer")
 
 
 class SkillCategory(Strict):
     name: str
+    layer: Layer | None = Field(None, description="Layer on the site's skills map for this category's skills")
     skills: list[Skill]
 
 
