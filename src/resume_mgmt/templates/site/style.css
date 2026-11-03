@@ -293,7 +293,7 @@ h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; 
 .card .tags { margin-top: 10px; }
 .meta { font: 0.78rem/1.5 var(--f-mono); color: var(--muted); }
 
-/* --- view switch (by role / by capability) --- */
+/* --- view switch (by role / by highlight) --- */
 .views { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .bar nav .views a { padding: 6px 9px; }
 .bar nav .views a + a { border-left: 1px solid var(--line); }

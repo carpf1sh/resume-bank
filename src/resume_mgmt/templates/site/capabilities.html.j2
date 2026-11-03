@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ name }} · by capability</title>
+  <title>{{ name }} · by highlight</title>
   <meta name="description" content="{{ description }}">
   <link rel="canonical" href="{{ base_url }}capabilities.html">
   <meta property="og:type" content="profile">
-  <meta property="og:title" content="{{ name }} · by capability">
+  <meta property="og:title" content="{{ name }} · by highlight">
   <meta property="og:description" content="{{ description }}">
   <meta property="og:url" content="{{ base_url }}capabilities.html">
   <meta name="twitter:card" content="summary">
@@ -20,8 +20,13 @@
 <header class="bar">
   <div class="wrap">
     <a class="bar-id" href="./"><b>{{ name | lower | replace(" ", "-") }}</b> / portfolio</a>
-    <nav aria-label="Views">
-      <span class="views"><a href="./">by role</a><a href="capabilities.html" aria-current="page">by capability</a></span>
+    <nav aria-label="Sections">
+      <span class="views"><a href="./">by role</a><a href="capabilities.html" aria-current="page">by highlight</a></span>
+      <a href="./#experience">experience</a>
+      {% if matrix %}<a href="./#skills">skills</a>{% endif %}
+      {% if certifications %}<a href="./#certifications">certifications</a>{% endif %}
+      {% if projects %}<a href="./#projects">projects</a>{% endif %}
+      {% if education %}<a href="./#education">education</a>{% endif %}
       <button class="theme" type="button" aria-label="Toggle dark mode" hidden>◐</button>
     </nav>
   </div>
@@ -37,7 +42,7 @@
   {% set top = capabilities[0].count %}
   <section id="map" aria-labelledby="map-h">
     <div class="sec-head">
-      <h2 id="map-h">Capabilities</h2>
+      <h2 id="map-h">Highlights</h2>
       <span class="count">{{ capabilities | length }} domains · {{ public_count }} highlights</span>
     </div>
     <ol class="capmap">
