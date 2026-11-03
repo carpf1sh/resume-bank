@@ -1,0 +1,15 @@
+id: northwind-2024-threat-modeling
+role_id: northwind-cloud-security-architect
+title: Threat modeling workshops
+period: { start: "2024-06", end: "2024-12" }
+star:
+  action: Ran threat modeling workshops for new services before their architecture was fixed.
+  result: null
+skills: [Threat Modeling, Security Architecture Review]
+domains: [security-architecture]
+visibility: public
+public_text: Ran threat modeling workshops for new services while their designs could still change.
+strength: 2
+resume_bullets:
+  - Ran threat modeling workshops for new services during design
+sources: [sources/resumes/2025-jane-doe-resume.txt]

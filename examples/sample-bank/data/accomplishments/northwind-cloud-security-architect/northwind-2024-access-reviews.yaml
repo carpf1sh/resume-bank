@@ -1,0 +1,15 @@
+id: northwind-2024-access-reviews
+role_id: northwind-cloud-security-architect
+title: Automated AWS access reviews
+period: { start: "2024-02", end: "2024-05" }
+star:
+  action: Automated quarterly access reviews for AWS accounts, with owners approving or revoking access in a ticket.
+  result: null
+skills: [AWS, SOC 2]
+domains: [iam, grc]
+visibility: public
+public_text: Automated quarterly AWS access reviews so account owners approve or revoke access in one ticket.
+strength: 2
+resume_bullets:
+  - Automated quarterly AWS access reviews, routing approve-or-revoke decisions to account owners
+sources: [sources/resumes/2025-jane-doe-resume.txt]

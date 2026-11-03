@@ -1,0 +1,15 @@
+id: northwind-2025-security-champions
+role_id: northwind-cloud-security-architect
+title: Security champions program
+period: { start: "2025-01", end: "2025-09" }
+star:
+  action: Started a security champions program with one engineer from each product team and a monthly session.
+  result: null
+skills: [Mentoring, Team Leadership]
+domains: [leadership]
+visibility: public
+public_text: Started a security champions program with an engineer from each product team.
+strength: 2
+resume_bullets:
+  - Started a security champions program with one engineer from each product team
+sources: [sources/resumes/2025-jane-doe-resume.txt]

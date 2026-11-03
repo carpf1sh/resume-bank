@@ -9,6 +9,10 @@ Northwind Cloud, Cloud Security Architect (2022-03 - present)
 - Defined and enforced an EKS security baseline across all 9 production clusters
 - Led a three-person team automating alert triage with SOAR enrichment and LLM summaries
 - Built an AI usage review process for engineering teams adopting coding assistants
+- Added secret scanning to pre-commit hooks and CI pipelines across all product repositories
+- Automated quarterly AWS access reviews, routing approve-or-revoke decisions to account owners
+- Ran threat modeling workshops for new services during design
+- Started a security champions program with one engineer from each product team
 
 Contoso Bank, Senior Security Engineer (2021-01 - 2022-02)
 - Led a SIEM migration, onboarding 30 log sources with no coverage gap

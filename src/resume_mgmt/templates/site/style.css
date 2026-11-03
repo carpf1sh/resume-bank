@@ -247,12 +247,30 @@ h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; 
 .filter-status button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 
 /* --- experience log --- */
-.timeline { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+/* clip, not hidden: hidden would make the list a scroll container and stop the role heads sticking */
+.timeline { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; overflow: clip; }
 .role + .role { border-top: 1px solid var(--line); }
+/* Sticks while its role scrolls by, so a long role keeps its title in view. */
 .role-head {
   display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 16px;
   padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 1;
 }
+/* A target inside a role lands below its sticky head, not under it. */
+.role :target { scroll-margin-top: 64px; }
+/* Long roles: the first few highlights, then "show N more" (site.js; ROLE_PREVIEW in site.py).
+   Without JavaScript the toggle stays hidden and every item shows. */
+.role-more { display: none; }
+.js .role-more {
+  display: grid; grid-template-columns: 1.2ch minmax(0, 1fr); gap: 12px; align-items: baseline; width: 100%;
+  padding: 10px 16px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left;
+  font: 0.8rem var(--f-mono); color: var(--muted); cursor: pointer;
+}
+.role-more::before { content: "›"; display: inline-block; }
+.role-more[aria-expanded="true"]::before { transform: rotate(90deg); color: var(--accent); }
+.role-more:hover { background: var(--bg); color: var(--text); }
+.timeline:not(.filtering) .folded .item.extra { display: none; }
+.timeline.filtering .role-more { display: none; }
 .role-empty .role-head { border-bottom: 0; }
 .role h3 { margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: -0.005em; }
 .role h3 .employer { color: var(--muted); font-weight: 400; }
@@ -409,7 +427,9 @@ code { font-family: var(--f-mono); font-size: 0.86em; background: var(--accent-w
   .tk-wide { display: block !important; }
   .tk-narrow { display: none !important; }
   .links a { border: 0; padding: 0; }
-  .filtered-out { display: block !important; }
+  .filtered-out, .timeline .folded .item.extra { display: block !important; }
+  .js .role-more { display: none; }
+  .role-head { position: static; }
   .hero { padding: 0 0 12px; }
   section { margin: 20px 0; break-inside: auto; }
   .item, .card, .role-head { break-inside: avoid; }
