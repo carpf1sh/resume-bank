@@ -197,7 +197,9 @@ h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; margin: 0; 
 .tk-tip-cert { stroke: var(--tk-cert); }
 .tk-diamond { fill: var(--tk-cert); stroke: var(--tk-cert); stroke-width: 2; }
 .tk-x { stroke: var(--muted); stroke-width: 2; }
-.tk-tick { stroke: var(--line); }
+.tk-band { fill: transparent; transition: fill 0.15s; }
+.tk-band-alt { fill: color-mix(in srgb, var(--text) 4.5%, transparent); }
+.tk-band.on { fill: color-mix(in srgb, var(--accent) 13%, transparent); }
 .tk-tx { font: 11px var(--f-mono); fill: var(--text); }
 .tk-tx-muted { fill: var(--muted); }
 .tk-tx-deg { fill: var(--tk-degree); }

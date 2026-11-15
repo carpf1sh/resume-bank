@@ -28,11 +28,15 @@
   var detail = track && track.querySelector(".tk-detail");
   if (detail) {
     var marks = Array.prototype.slice.call(track.querySelectorAll(".tk-hit"));
+    var bands = Array.prototype.slice.call(track.querySelectorAll(".tk-band"));
     var showMark = function (mark) {
       // Both drawings carry the same marks; highlight the match in each.
       marks.forEach(function (m) {
         m.classList.toggle("on", m.getAttribute("data-detail") === mark.getAttribute("data-detail"));
       });
+      // A role lights up its employer's band, so the stretch of time it belongs to stands out.
+      var seg = mark.getAttribute("data-seg");
+      bands.forEach(function (b) { b.classList.toggle("on", seg !== null && b.getAttribute("data-seg") === seg); });
       detail.firstChild.textContent = mark.getAttribute("data-detail");
       detail.lastChild.textContent = mark.getAttribute("data-dates");
     };

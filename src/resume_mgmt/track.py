@@ -140,12 +140,15 @@ def _n(v: float) -> str:
     return f"{v:.1f}".rstrip("0").rstrip(".")
 
 
-def _hit(m: Mark, shape: str, current: bool = False) -> str:
-    """A mark linking to its entry on the page, with a detail line site.js shows; <title> is the no-JS tooltip."""
+def _hit(m: Mark, shape: str, current: bool = False, seg: int | None = None) -> str:
+    """A mark linking to its entry on the page, with a detail line site.js shows; <title> is the no-JS tooltip.
+
+    Role marks carry `data-seg`, the index of their employer's band, which site.js lights up on hover."""
     label = f"{m.detail}, {m.dates}"
     cls = f"tk-hit tk-{m.kind}" + (" tk-current" if current else "")
+    seg_attr = "" if seg is None else f' data-seg="{seg}"'
     return (f'<a class="{cls}" href="#{m.anchor}" aria-label="{escape(label)}" data-detail="{escape(m.detail)}" '
-            f'data-dates="{escape(m.dates)}"><title>{escape(label)}</title>{shape}</a>')
+            f'data-dates="{escape(m.dates)}"{seg_attr}><title>{escape(label)}</title>{shape}</a>')
 
 
 def _dot(x: float, y: float, cls: str, r: float = 5) -> str:
@@ -159,6 +162,13 @@ def _diamond(x: float, y: float) -> str:
 
 def _cross(x: float, y: float) -> str:
     return f'<path class="tk-x" d="M{_n(x - 4)} {_n(y - 4)}l8 8m0 -8l-8 8"/>'
+
+
+def _band(i: int, x: float, y: float, w: float, h: float) -> str:
+    """The shaded stretch behind one employer; every other one is tinted so tenure reads as width."""
+    cls = "tk-band" + (" tk-band-alt" if i % 2 else "")
+    return (f'<rect class="{cls}" data-seg="{i}" x="{_n(x)}" y="{_n(y)}" width="{_n(max(w, 0))}" '
+            f'height="{_n(max(h, 0))}" rx="4"/>')
 
 
 def _text(x: float, y: float, text: str, cls: str, anchor: str = "start") -> str:
@@ -178,12 +188,16 @@ class _Track:
         self.lo = roles[0].start - 0.12
         self.hi = max(now, roles[0].start + 1) + 0.12
         self.segs = _segments(roles, now)
+        self.seg_of = []  # band index of each role
+        for m in roles:
+            self.seg_of.append(next(i for i, (_, s, e) in enumerate(self.segs) if s <= m.start <= e))
         last = roles[-1]
         self.main_end = now if last.end is None else last.end
         self.label = f"Career track, {math.floor(roles[0].start)} to {'now' if last.end is None else math.floor(last.end)}"
 
     def _role_hits(self, at) -> list[str]:
-        return [_hit(m, _dot(*at(m.start), "tk-dot"), current=i == len(self.roles) - 1) for i, m in enumerate(self.roles)]
+        return [_hit(m, _dot(*at(m.start), "tk-dot"), current=i == len(self.roles) - 1, seg=self.seg_of[i])
+                for i, m in enumerate(self.roles)]
 
     def wide(self) -> Markup:
         W, P = 680, 20
@@ -217,16 +231,17 @@ class _Track:
                 out.append(_text(a + 28, y - 4, m.label, "tk-tx tk-tx-cert"))
             out.append(_hit(m, _diamond(a + 19, y)))
         out += self._role_hits(lambda t: (x(t), M))
-        for label, s, e in self.segs:
+        bands = []
+        for i, (label, s, e) in enumerate(self.segs):
             a, b = x(s), x(e)
-            out.append(f'<path class="tk-tick" d="M{_n(a)} {band - 9}V{band + 2}"/>')
+            bands.append(_band(i, a, 4, b - a, band + 2))
             if len(label) * CHAR_W <= b - a + 8:
                 out.append(_text((a + b) / 2, band, label, "tk-tx", "middle"))
         step = 1 if (W - 2 * P) / (self.hi - self.lo) >= 44 else 2
         for yr in range(math.ceil(self.lo), math.floor(self.hi) + 1):
             if yr % step == 0:
                 out.append(_text(x(yr), band + 20, str(yr), "tk-tx tk-tx-muted", "middle"))
-        return _svg("tk-wide", W, band + 28, self.label, out)
+        return _svg("tk-wide", W, band + 28, self.label, bands + out)
 
     def narrow(self) -> Markup:
         W, top, per_year = 340, 16, 56
@@ -258,6 +273,8 @@ class _Track:
             out.append(_hit(m, _diamond(xl, a - 19)))
             labels.append((a - 19, m.label, "tk-tx tk-tx-cert"))
         out += self._role_hits(lambda t: (M, y(t)))
+        bands = [_band(i, M - 14 * self.n_deg - 26, y(e), W - (M - 14 * self.n_deg - 26), y(s) - y(e))
+                 for i, (_, s, e) in enumerate(self.segs)]
         labels += [((y(s) + y(e)) / 2, label, "tk-tx") for label, s, e in self.segs]
         prev = -math.inf
         for target, text, cls in sorted(labels):
@@ -266,7 +283,7 @@ class _Track:
         for yr in range(math.ceil(self.lo), math.floor(self.hi) + 1):
             out.append(_text(0, y(yr) + 4, str(yr), "tk-tx tk-tx-muted"))
         height = max(y(self.lo), prev + 10) + top
-        return _svg("tk-narrow", W, height, self.label, out)
+        return _svg("tk-narrow", W, height, self.label, bands + out)
 
 
 def career_track(bank: Bank, today: date) -> dict | None:
